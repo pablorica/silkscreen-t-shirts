@@ -50,7 +50,7 @@ Thumbs.db
 
 # Manual Debug File #
 ############################
-!web/error.log
+web/error.log
 
 # Manual Installed Plugins #
 ############################
