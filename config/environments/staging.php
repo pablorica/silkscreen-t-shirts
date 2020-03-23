@@ -13,3 +13,8 @@ use Roots\WPConfig\Config;
  * Example: `Config::define('WP_DEBUG', true);`
  * Example: `Config::define('DISALLOW_FILE_MODS', false);`
  */
+
+/**
+ * LiteSpeed Cache Plugin
+ */
+Config::define('WP_CACHE', true);
