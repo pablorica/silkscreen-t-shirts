@@ -10,9 +10,6 @@ web/app/uploads/*
 web/wp
 web/.htaccess
 
-# Logs
-*.log
-
 # Dotenv
 .env
 .env.*
@@ -23,3 +20,43 @@ web/.htaccess
 
 # WP-CLI
 wp-cli.local.yml
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Stuff that must always be ignored:
+**/.htaccess
+**/.htpasswd
+**/.DS_Store
+**/.sass-cache
+**/node_modules
+**/bower_components
+**/node_modules
+**/dist
+**/dist-product
+**/npm-debug.log
+**/.vscode
+**/*.sql.gz
+
+# Backup files
+*.bak
+
+# Manual Installed Plugins #
+############################
+!web/app/plugins/advanced-custom-fields-pro/
+!web/app/plugins/revslider/
+!web/app/plugins/ro-product-picker/
+!web/app/plugins/wp-all-import-pro/
+!web/app/plugins/wpallimportxmlcsv229beta51/
+!web/app/plugins/wp-migrate-db-pro/
+!web/app/plugins/wp-migrate-db-pro-media-files/
+
+
+
