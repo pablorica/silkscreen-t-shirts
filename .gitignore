@@ -48,6 +48,10 @@ Thumbs.db
 # Backup files
 *.bak
 
+# Manual Debug File #
+############################
+!web/error.log
+
 # Manual Installed Plugins #
 ############################
 !web/app/plugins/advanced-custom-fields-pro/

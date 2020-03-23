@@ -16,7 +16,7 @@ Config::define('SCRIPT_DEBUG', true);
 /* Create a error log file */
 ini_set('log_errors',TRUE);
 ini_set('error_reporting', E_ALL);
-ini_set('error_log', dirname(__FILE__) . '/../../web/error_log.txt');
+ini_set('error_log', dirname(__FILE__) . '/../../web/error.log');
 
 // Enable plugin and theme updates and installation from the admin
 Config::define('DISALLOW_FILE_MODS', false);
