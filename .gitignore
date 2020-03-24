@@ -54,7 +54,7 @@ web/error.log
 
 # Manual Installed Plugins #
 ############################
-!web/app/plugins/advanced-custom-fields-pro/
+# !web/app/plugins/advanced-custom-fields-pro/
 !web/app/plugins/revslider/
 !web/app/plugins/ro-product-picker/
 !web/app/plugins/wp-all-import-pro/

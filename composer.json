@@ -37,6 +37,7 @@
     "roots/wordpress": "5.3.2",
     "roots/wp-config": "1.0.0",
     "roots/wp-password-bcrypt": "1.0.0",
+    "wpackagist-plugin/advanced-custom-fields": "*",
     "wpackagist-plugin/ajax-search-for-woocommerce": "*",
     "wpackagist-plugin/ajax-search-lite": "*",
     "wpackagist-plugin/akismet": "*",
