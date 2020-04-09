@@ -61,6 +61,7 @@ web/error.log
 !web/app/plugins/wpallimportxmlcsv229beta51/
 !web/app/plugins/wp-migrate-db-pro/
 !web/app/plugins/wp-migrate-db-pro-media-files/
+!web/app/plugins/wp-meta-verify/
 
 
 
