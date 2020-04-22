@@ -52,6 +52,12 @@ Thumbs.db
 ############################
 web/error.log
 
+# Plugin Repositories #
+############################
+web/**/.git
+web/**/.gitignore
+
+
 # Manual Installed Plugins #
 ############################
 # !web/app/plugins/advanced-custom-fields-pro/
