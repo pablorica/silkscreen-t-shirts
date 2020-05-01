@@ -1,0 +1,105 @@
+# Translation of Plugins - WooCommerce Remove All Products - Development (trunk) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - WooCommerce Remove All Products - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2017-10-25 07:28:25+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - WooCommerce Remove All Products - Development (trunk)\n"
+
+#. Plugin URI of the plugin/theme
+msgid "https://wordpress.org/plugins/woocommerce-remove-all-products/"
+msgstr "https://es.wordpress.org/plugins/woocommerce-remove-all-products/"
+
+#. Author URI of the plugin/theme
+msgid "http://omniwp.com.br/"
+msgstr "http://omniwp.com.br/"
+
+#. Author of the plugin/theme
+msgid "Gabriel Reguly"
+msgstr "Gabriel Reguly"
+
+#. Description of the plugin/theme
+msgid "This plugin will remove all products from a WooCommerce store."
+msgstr "Este plugin elimina todos los productos de una tienda WooCommerce."
+
+#: woocommerce-remove-all-products.php:289
+msgid "Log cleared."
+msgstr "Registro limpiado."
+
+#: woocommerce-remove-all-products.php:261
+#: woocommerce-remove-all-products.php:277
+msgid "Log Started."
+msgstr "Registro iniciado."
+
+#: woocommerce-remove-all-products.php:201
+msgid "User"
+msgstr "Usuario"
+
+#: woocommerce-remove-all-products.php:200
+msgid "Event"
+msgstr "Evento"
+
+#: woocommerce-remove-all-products.php:199
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+#: woocommerce-remove-all-products.php:194
+msgid "Clear Log"
+msgstr "Limpiar el registro"
+
+#: woocommerce-remove-all-products.php:192
+msgid "Logged events"
+msgstr "Eventos registrados"
+
+#: woocommerce-remove-all-products.php:161
+msgid "Continue deleting all products, again no confirmations will be asked!!"
+msgstr "Continuar eliminando todos los productos, ¡otra vez no se te pedirá ninguna confirmación!"
+
+#: woocommerce-remove-all-products.php:155
+msgid "Removed %s products."
+msgstr "%s Productos eliminados."
+
+#: woocommerce-remove-all-products.php:140
+msgid "Trying to remove %s products."
+msgstr "Intentando eliminar %s productos."
+
+#: woocommerce-remove-all-products.php:127
+msgid "Delete all products, no confirmations will be asked!!"
+msgstr "Eliminar todos los productos, ¡no se te pedirá ninguna confirmación!"
+
+#: woocommerce-remove-all-products.php:122
+msgid "Found %s products."
+msgstr "Encontrar los productos %s."
+
+#: woocommerce-remove-all-products.php:120
+msgid "No products found."
+msgstr "No se han encontrado productos."
+
+#: woocommerce-remove-all-products.php:83
+msgid "Your settings have been saved."
+msgstr "Tus ajustes se han guardado."
+
+#: woocommerce-remove-all-products.php:76
+msgid "Log"
+msgstr "Registro"
+
+#: woocommerce-remove-all-products.php:41
+msgid "Remove All Products"
+msgstr "Eliminar todos los productos"
+
+#. #-#-#-#-#  woocommerce-remove-all-products-code.pot (WooCommerce Remove All
+#. Products 1.0.6)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: woocommerce-remove-all-products.php:40
+#: woocommerce-remove-all-products.php:74
+msgid "WooCommerce Remove All Products"
+msgstr "WooCommerce Remove All Products"
+
+#: woocommerce-remove-all-products.php:302
+msgid "Please rate <a href=\"%1$s\" target=\"_blank\">&#9733;&#9733;&#9733;&#9733;&#9733;</a> for <strong>WooCommerce Remove All Products</strong> on <a href=\"%1$s\" target=\"_blank\">WordPress.org</a> and make the developer happy :-)"
+msgstr "Por favor, valifica con <a href=\"%1$s\" target=\"_blank\">&#9733;&#9733;&#9733;&#9733;&#9733;</a> el plugin <strong>WooCommerce Remove All Products</strong> en <a href=\"%1$s\" target=\"_blank\">WordPress.org</a> y haz feliz al desarrollador :-)"

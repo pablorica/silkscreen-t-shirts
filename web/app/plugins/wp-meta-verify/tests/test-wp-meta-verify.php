@@ -25,4 +25,19 @@ class WP_Meta_VerifyTest extends WP_UnitTestCase
 
 	    $this->assertEquals($expected, $meta_tag);
 	}
+
+	public function testQuantityTransformIsCorrect() {
+	    $result = $this->class_instance->get_quantity( '1.000 €' );
+	    $this->assertEquals( 1000, $result );
+	}
+
+	public function testVatOfIntegerIsCorrect() {
+	    $result = $this->class_instance->get_vat( 1000 );
+	    $this->assertEquals( 210, $result );
+	}
+	  
+	public function testVatOfStringIsCorrect() {
+	    $result = $this->class_instance->get_vat( '1.000 €' );
+	    $this->assertEquals( 210, $result );
+	}
 }

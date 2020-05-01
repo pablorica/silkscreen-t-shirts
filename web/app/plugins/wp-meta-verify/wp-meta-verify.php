@@ -35,6 +35,20 @@ class WP_Meta_Verify
     {
         return "<meta name=\"msvalidate.01\" content=\"$code\">";
     }
+
+    public function get_quantity( $str ) {
+      //Comment this line to create errors on phpUnit
+      $quantity = (int) filter_var($str, FILTER_SANITIZE_NUMBER_INT);;
+      
+      return $quantity;
+    }
+
+    public function get_vat( $quantity ) {
+      //Comment this line to create errors on phpUnit
+      $quantity = $this->get_quantity( $quantity ) ;
+
+      return $quantity * 0.21;
+    }
 }
 
 new WP_Meta_Verify();

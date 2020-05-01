@@ -1,0 +1,318 @@
+# Translation of Plugins - WP Sitemap Page - Development (trunk) in Spanish (Spain)
+# This file is distributed under the same license as the Plugins - WP Sitemap Page - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-04-01 18:40:35+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: es\n"
+"Project-Id-Version: Plugins - WP Sitemap Page - Development (trunk)\n"
+
+#: settings.php:368
+msgid "To hide the word \"category\" on the title of each category"
+msgstr "Para ocultar la palabra «categoría» en el título de cada categoría"
+
+#: settings.php:367
+msgid "To display the posts by category. Posts sorted by name with ascendent order. Possible values for \"order\" attribute are: %1$s"
+msgstr "Para mostrar las entradas por categorías. Entradas ordenadas por nombre en orden ascendente. Los posibles valores para el atributo «ordenar» son: %1$s"
+
+#. Plugin Name of the plugin
+#: settings.php:33 wp-sitemap-page.php:151 wp-sitemap-page.php:152
+msgid "WP Sitemap Page"
+msgstr "WP Sitemap Page"
+
+#: settings.php:40
+msgid "Help us"
+msgstr "Ayudanos"
+
+#: settings.php:41
+msgid "This plugin is freely developped and distrubed to the WordPress community. Plenty of hours were necessary to develop this project."
+msgstr "Este plugin ha sido desarrollado y distribuido para la comunidad WordPress. Muchas horas se han invertido para desarrollar este proyecto."
+
+#: settings.php:42
+msgid "If you like this plugin, feel free to rate it 5 stars on the WordPress.org website or to donate."
+msgstr "Si te gusta este plugin, puntúalo con 5 estrellas en WordPress.org o haz una donación"
+
+#: settings.php:43 settings.php:435 wp-sitemap-page.php:188
+msgid "Donate"
+msgstr "Donar"
+
+#: settings.php:47
+msgid "Traditionnal sitemap"
+msgstr "Sitemap Tradicional"
+
+#: settings.php:48
+msgid "To display a traditional sitemap, just use [wp_sitemap_page] on any page or post."
+msgstr "Para mostrar el sitemap tradicional, sólo usa [wp_sitemap_page] en cualquier página o post."
+
+#: settings.php:52
+msgid "Display only some content"
+msgstr "Mustra sólo algún contenido"
+
+#: settings.php:53
+msgid "Display only some kind of content using the following shortcodes."
+msgstr "Mostrar sólo algún contenido usando los siguientes shortcodes"
+
+#: settings.php:112
+msgid "Customize the way to display the posts"
+msgstr "Configura cómo mostrar los posts"
+
+#: settings.php:115
+msgid "Please choose how you want to display the posts on the sitemap."
+msgstr "Por favor, indica cómo quieres mostrar los posts en el sitemap"
+
+#: settings.php:117
+msgid "%1$s: title of the post."
+msgstr "%1$s: título del post"
+
+#: settings.php:118
+msgid "%1$s: URL of the post."
+msgstr "%1$s: URL del post"
+
+#: settings.php:119
+msgid "%1$s: The year of the post, four digits, for example 2004."
+msgstr "%1$s: El año del post, cuatro dígitos, por ejemplo 2004."
+
+#: settings.php:120
+msgid "%1$s: Month of the year, for example 05."
+msgstr "%1$s: Mes del año, por ejemplo 05."
+
+#: settings.php:121
+msgid "%1$s: Day of the month, for example 28."
+msgstr "%1$s: Día del mes, por ejemplo 28."
+
+#: settings.php:122
+msgid "%1$s: Hour of the day, for example 15."
+msgstr "%1$s: Hora del día, por ejemplo 15.."
+
+#: settings.php:123
+msgid "%1$s: Minute of the hour, for example 43."
+msgstr "%1$s: Minutos de la hora, por ejemplo 43."
+
+#: settings.php:124
+msgid "%1$s: Second of the minute, for example 33."
+msgstr "%1$s: Segundos del minuto, por ejemplo 33."
+
+#: settings.php:125
+msgid "%1$s: The unique ID # of the post, for example 423."
+msgstr "%1$s: El # de ID único del post, por ejemplo 423."
+
+#: settings.php:126
+msgid "%1$s: Category name. Nested sub-categories appear as nested directories in the URI."
+msgstr "%1$s: Categoría. Las subcategorías anidadas aparecerán como directorios anidados en el URI."
+
+#: settings.php:134
+msgid "How to display the posts"
+msgstr "Cómo mostrar los posts"
+
+#: settings.php:157
+msgid "Initial way to display the content: %1$s"
+msgstr "Modo inicial de mostrar el contenido: %1$s"
+
+#: settings.php:184
+msgid "Exclude from traditional sitemap"
+msgstr "Excluir del sistemap tradicional"
+
+#: settings.php:192
+msgid "Exclude pages"
+msgstr "Páginas excluidas"
+
+#: settings.php:203
+msgid "Just add the IDs, separated by a comma, of the pages you want to exclude."
+msgstr "Añade las IDs, separadas por comas, de las páginas que quieres excluir."
+
+#: settings.php:208
+msgid "Exclude Custom Post Type"
+msgstr "Excluye el Custom Post Type"
+
+#: settings.php:223
+msgid "Page"
+msgstr "Página"
+
+#: settings.php:231
+msgid "Post"
+msgstr "Post"
+
+#: settings.php:239
+msgid "Archive"
+msgstr "Archivo"
+
+#: settings.php:247
+msgid "Author"
+msgstr "Autor"
+
+#: settings.php:332
+msgid "Display the plugin link"
+msgstr "Mostrar el link del plugin"
+
+#: settings.php:341
+msgid "Display the plugin name with a link at the bottom of the sitemap."
+msgstr "Mostrar el nombre del plugin con un link debajo del sitemap"
+
+#: settings.php:356 wp-sitemap-page.php:366
+msgid "How to use"
+msgstr "Cómo usarlo"
+
+#: settings.php:359
+msgid "You can use any of the following shortcodes in the content of your pages (or posts) to display a dynamic sitemap."
+msgstr "Puedes usar cualquier de los siguientes shortcodes en el contenido de tus páginas (o posts)  para mostrar un sitemap dinámico."
+
+#: settings.php:362
+msgid "To display a traditionnal sitemap"
+msgstr "Cómo mostrar un sitemap tradicional"
+
+#: settings.php:363
+msgid "To display the pages"
+msgstr "Cómo mostrar las páginas"
+
+#: settings.php:365
+msgid "To display the posts by category"
+msgstr "Cómo mostrar los posts por categoría"
+
+#: settings.php:369
+msgid "To display the categories"
+msgstr "Cómo mostrar las categorías"
+
+#: settings.php:371
+msgid "To display the tags"
+msgstr "Cómo mostrar los tags"
+
+#: settings.php:372
+msgid "To display the archives"
+msgstr "Cómo mostrar los archivos"
+
+#: settings.php:373
+msgid "To display the authors"
+msgstr "Cómo mostrar los autores"
+
+#: settings.php:382 settings.php:395
+msgid "To display the %1$s"
+msgstr "Cómo mostrar %1$s"
+
+#: settings.php:421
+msgid "About"
+msgstr "Acerca de"
+
+#: settings.php:433
+msgid "Developed by <a href=\"%1$s\">Tony Archambeau</a>."
+msgstr "Desarrollado por <a href=\"%1$s\">Tony Archambeau</a>."
+
+#: settings.php:434
+msgid "Rate the plugin on Wordpress.org"
+msgstr "Puntúa este plugin en Wordpress.org"
+
+#: settings.php:440
+msgid "Translated in Russian by <a href=\"%1$s\">skesov.ru</a>."
+msgstr "Traducido en Ruso por <a href=\"%1$s\">skesov.ru</a>."
+
+#: wp-sitemap-page.php:187 wp-sitemap-page.php:365
+msgid "Settings"
+msgstr "Ajustes"
+
+#: wp-sitemap-page.php:465
+msgid "Powered by \"WP Sitemap Page\""
+msgstr "Powered by \"WP Sitemap Page\""
+
+#: wp-sitemap-page.php:636
+msgid "Pages"
+msgstr "Páginas"
+
+#: wp-sitemap-page.php:687
+msgid "Posts by category"
+msgstr "Posts por categoría"
+
+#: wp-sitemap-page.php:729
+msgid "Categories"
+msgstr "Categorías"
+
+#: wp-sitemap-page.php:810
+msgid "Archives"
+msgstr "Archivos"
+
+#: wp-sitemap-page.php:856
+msgid "Authors"
+msgstr "Autores"
+
+#: wp-sitemap-page.php:1133
+msgid "Category: %1$s"
+msgstr "Categoría: %1$s"
+
+#: wp-sitemap-page.php:1224
+msgid "<a href=\"{permalink}\"%1$s>{title}</a> ({monthnum}/{day}/{year})"
+msgstr "<a href=\"{permalink}\"%1$s>{title}</a> ({day}/{monthnum}/{year})"
+
+#: settings.php:104
+msgid "Add a nofollow attribute to the links."
+msgstr "Añadir atributo \"nofollow\" a los enlaces."
+
+#: settings.php:95
+msgid "General settings"
+msgstr "Ajustes generales"
+
+#: settings.php:275
+msgid "Exclude taxonomies"
+msgstr "Excluir taxonomías"
+
+#: wp-sitemap-page.php:769
+msgid "Tags"
+msgstr "Etiquetas"
+
+#. Author of the plugin
+msgid "Tony Archambeau"
+msgstr "Tony Archambeau"
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "http://tonyarchambeau.com/"
+msgstr "https://tonyarchambeau.com/"
+
+#. Description of the plugin
+msgid "Add a sitemap on any page/post using the simple shortcode [wp_sitemap_page]"
+msgstr "Añade un mapa del sitio en cualquier pagina/entrada usando el sencillo shortcode [wp_sitemap_page]"
+
+#: settings.php:162
+msgid "Displayed multiple times"
+msgstr "Se muestra varias veces"
+
+#: settings.php:319
+msgid "Exclude content protected by password"
+msgstr "Excluir el contenido protegido por contraseña"
+
+#: settings.php:307
+msgid "Password protected"
+msgstr "Protegido con contraseña"
+
+#: settings.php:398
+msgid "Display only the private page (do not works with other kind of content)"
+msgstr "Mostrar solo la página privada (no funciona con otro tipo de contenido)"
+
+#: settings.php:364
+msgid "To display the pages sorted by menu order. Possible values are: %1$s."
+msgstr "Para mostrar las páginas ordenadas por orden de menú. Los valores posibles son: %1$s."
+
+#: settings.php:397
+msgid "To display a traditionnal sitemap without the title"
+msgstr "Para mostrar un mapa del sitio tradicional sin el título"
+
+#: settings.php:370
+msgid "To display the categories sorted by number of posts. Possible values are: %1$s"
+msgstr "Para mostrar las categorías ordenadas por el número de entradas. Los valores posibles son: %1$s"
+
+#: settings.php:366
+msgid "To display the posts by category. Categories sorted by number of posts. Possible values are: %1$s"
+msgstr "Para mostrar las entradas por categoría. Categorías ordenadas por número de entradas. Los valores posibles son: %1$s"
+
+#: settings.php:374
+msgid "To display the authors, sorted by number of posts by author. Possible values are: %1$s."
+msgstr "Para mostrar los autores, ordenados por el número de entradas por autor. Los valores posibles son: %1$s."
+
+#: settings.php:172
+msgid "Displayed in each category if posts are in multiples categories."
+msgstr "Se muestra en cada categoría si las entradas están en varias categorías."
+
+#: settings.php:106
+msgid "Please be advice to avoid this feature as it may hurt your SEO (Search Engine Optimization), if you don't know what it is."
+msgstr "Por favor, ten en cuenta que debes evitar esta característica, ya que puede dañar tu SEO (Search Engine Optimization), si no sabes lo que es."
