@@ -50,6 +50,7 @@
     "wpackagist-plugin/wp-google-maps": "*",
     "wpackagist-plugin/wp-mail-smtp": "*",
     "wpackagist-plugin/wp-sitemap-page": "*",
+    "wpackagist-plugin/health-check": "*",
     "yoast/wordpress-seo": "*"
   },
   "require-dev": {
