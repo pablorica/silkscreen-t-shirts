@@ -65,6 +65,7 @@ web/**/.gitignore
 !web/app/plugins/ro-product-picker/
 !web/app/plugins/wp-all-import-pro/
 !web/app/plugins/wpallimportxmlcsv229beta51/
+!web/app/plugins/wpai-woocommerce-add-on/
 !web/app/plugins/wp-migrate-db-pro/
 !web/app/plugins/wp-migrate-db-pro-media-files/
 !web/app/plugins/wp-meta-verify/
