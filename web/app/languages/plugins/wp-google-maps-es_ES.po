@@ -2,24 +2,32 @@
 # This file is distributed under the same license as the Plugins - WP Google Maps - Development (trunk) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-04-07 14:51:55+0000\n"
+"PO-Revision-Date: 2020-05-10 06:07:03+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/2.4.0-alpha\n"
+"X-Generator: GlotPress/3.0.0-alpha\n"
 "Language: es\n"
 "Project-Id-Version: Plugins - WP Google Maps - Development (trunk)\n"
+
+#: includes/class.strings.php:54
+msgid "This address could not be found. WP Google Maps uses a 3rd party service (eg Google) to convert addresses to geographic coordinates. Unfortunately, the service has no records for this address at present. Please try an alternative format, or manually position the marker using right click."
+msgstr "No se pudo encontrar esta dirección. WP Google Maps utiliza servicios externos (p.ej. Google) para convertir direcciones a coordenadas geográficas. Desafortunadamente el servicio no tienen registros de esta dirección en este momento. Por favor, prueba un formato alternativo, o situa manualmente el marcador usando el clic derecho."
+
+#: wpGoogleMaps.php:1414
+msgid "<strong>WP Google Maps:</strong> File integrity checks failed, please re-install the plugin, or <a href=\"https://wpgmaps.com/contact-us\">contact us</a> for support."
+msgstr "<strong>WP Google Maps:</strong> Fallaron las comprobaciones de integridad de archivos, por favor, reinstala el plugin o <a href=\"https://wpgmaps.com/contact-us\">contáctanos</a> para obtener ayuda."
 
 #: includes/class.store-locator.php:82
 msgid "ZIP / Addressss:"
 msgstr "Código postal / Dirección:"
 
-#: includes/class.strings.php:89
+#: includes/class.strings.php:96
 msgid "Are you sure you want to delete these maps?"
 msgstr "¿Seguro que quieres borrar estos mapas?"
 
-#: includes/class.strings.php:88
+#: includes/class.strings.php:95
 msgid "Are you sure you want to delete this map?"
 msgstr "¿Seguro que quieres borrar este mapa?"
 
@@ -55,9 +63,9 @@ msgstr "Por defecto - La portada por defecto."
 msgid "Bare Bones - Applies no styling to the components at all. This is recommended for designers and developers who want to style the components from scratch."
 msgstr "Esqueleto - No aplica ningún estilo a los componentes. Se recomienda para diseñadores y desarrolladores que quieran dar estilo desde cero a los componentes."
 
-#: includes/class.strings.php:25
-msgid "You have not entered a <b>Google Maps API Key</b>.<br /><br />Please go to the your admin area, then Maps, then Settings, then the Advanced tab to enter your Google Maps API key.<br /><br />Alternatively, choose the Open Layers engine to avoid getting an API key."
-msgstr "No has introducido una <b>clave API de Google Maps</b>.<br /><br />Por favor, ve al escritorio, luego a «Mapas», después a «Ajustes» y finalmente a la pestaña «Avanzado» para introducir tu clave API de Google Maps.<br /><br />Alternativamente, elige el motor Open Layers para evitar tener que conseguir una clave API."
+#: includes/class.strings.php:27
+msgid "You have not entered a <b>Google Maps API Key</b>.<br /><br />Please go to the your admin area, then Maps, then Settings, then the Advanced tab to <a href=\"%s\">enter your Google Maps API key</a>.<br /><br />Alternatively, <a href=\"%s\">choose the Open Layers engine</a> to avoid getting an API key."
+msgstr "No has introducido una <b>clave de la API de Google Maps</b>.<br /><br />Por favor, ve a tu área de administración, luego a «Mapas», después a «Ajustes» y, finalmente, a la pestaña «Avanzado» para <a href=\"%s\">introducir tu clave de la API de Google Maps</a>.<br /><br />Alternativamente, <a href=\"%s\">elige el motor Open Layers</a> para evitar tener que obtener una clave de la API."
 
 #: html/ol-feature-unavailable.html.php:9
 msgid "Not available while using the OpenLayers engine."
@@ -71,27 +79,27 @@ msgstr "Asegúrate de <a href=\"%s\">introducir una clave API de Google Maps</a>
 msgid "once off!"
 msgstr "en descuento!"
 
-#: includes/class.strings.php:86
+#: includes/class.strings.php:93
 msgid "Geocoding this address failed. Please check you have enabled the Geocoding API for your Google Maps API project."
 msgstr "Ha fallado la geocodificación de esta dirección. Por favor, comprueba que has activado la API de geocodificación para tu proyecto API de Google Maps."
 
-#: includes/class.strings.php:85
+#: includes/class.strings.php:92
 msgid "Geocode was not successful for the following reason: "
 msgstr "Ha fallado la geolocalización por el siguiente motivo: "
 
-#: includes/class.strings.php:81
+#: includes/class.strings.php:88
 msgid "Re-Enable Interactions"
 msgstr "Reactivar las interacciones"
 
-#: includes/class.strings.php:80
+#: includes/class.strings.php:87
 msgid "Interactions Enabled"
 msgstr "Interacciones activadas"
 
-#: includes/class.strings.php:79
+#: includes/class.strings.php:86
 msgid "Some interactions are disabled."
 msgstr "Algunas interacciones están desactivadas."
 
-#: includes/class.strings.php:77
+#: includes/class.strings.php:84
 msgid "Duplicate custom field names, please ensure you only add unique custom field names."
 msgstr "Al duplicar los nombres de los campos personalizados, por favor, asegúrate de que solo añades nombres de campos personalizados únicos."
 
@@ -199,23 +207,23 @@ msgstr "Crea marcadores personalizados con ventanas de información detallada"
 msgid "We've spent over %d years upgrading our plugin to ensure that it is the most user-friendly and comprehensive map plugin in the WordPress directory. Enjoy the peace of mind knowing that you are getting a truly premium product for all your mapping requirements. Did we also mention that we have fantastic support?"
 msgstr "Hemos pasado más de %d años actualizando nuestro plugin para asegurarnos de que es el plugin de mapas más fácil de usar y más completo del directorio de WordPress. Disfruta de la tranquilidad de saber que obtienes un producto verdaderamente premium para todas tus necesidades de mapas. ¿Hemos mencionado también que tenemos un fantástico soporte?"
 
-#: includes/class.strings.php:83
+#: includes/class.strings.php:90
 msgid "Use two fingers to move the map"
 msgstr "Usa dos dedos para mover el mapa"
 
-#: includes/class.strings.php:84
+#: includes/class.strings.php:91
 msgid "Use ctrl + scroll to zoom the map"
 msgstr "Usa ctrl + scroll para cambiar el zoom del mapa"
 
-#: includes/class.strings.php:75
+#: includes/class.strings.php:82
 msgid "Invalid theme data"
 msgstr "Datos del tema no válidos"
 
-#: wpGoogleMaps.php:1379
+#: wpGoogleMaps.php:1386
 msgid "The plugin cannot load due to syntax which is not supported in PHP 5.6 and below. The plugin could not implement a workaround successfully. We strongly recommend you use PHP 5.6 or above. Technical details are as follows: "
 msgstr "No se puede cargar el plugin debido a una sintaxis que no es compatible en PHP 5.6 e inferiores. El plugin no ha podido implementar una solución correcta. Te recomendamos encarecidamente que uses PHP 5.6 o superior. Los detalles técnicos son los siguientes: "
 
-#: includes/class.strings.php:73
+#: includes/class.strings.php:80
 msgid "This operation is not reversable. We recommend you take a backup before proceeding. Would you like to continue?"
 msgstr "Esta operación no es reversible. Antes de proceder, te recomendamos que hagas una copia de seguridad. ¿Te gustaría continuar?"
 
@@ -475,57 +483,53 @@ msgstr "El plugin no ha podido encontrar el directorio %s, que es el directorio 
 msgid "WP Google Maps:"
 msgstr "WP Google Maps:"
 
-#: includes/class.strings.php:71
+#: includes/class.strings.php:78
 msgid "Requires WP Google Maps - Gold add-on 5.0.0 or above"
 msgstr "Requiere WP Google Maps - Extensión Gold 5.0.0 o superior"
 
-#: includes/class.strings.php:66
+#: includes/class.strings.php:73
 msgid "from searched location"
 msgstr "desde la ubicación buscada"
 
-#: includes/class.strings.php:65
+#: includes/class.strings.php:72
 msgid "from your location"
 msgstr "desde tu ubicación"
 
-#: includes/class.strings.php:63
+#: includes/class.strings.php:70
 msgid "WP Google Maps - Bulk JPEG Upload"
 msgstr "WP Google Maps - Subida por lotes de JPEG"
 
-#: includes/class.strings.php:62
+#: includes/class.strings.php:69
 msgid "Uploading file"
 msgstr "Subiendo archivo"
 
-#: includes/class.strings.php:61
+#: includes/class.strings.php:68
 msgid "Upload Complete"
 msgstr "Subida completa"
 
-#: includes/class.strings.php:59
+#: includes/class.strings.php:66
 msgid "Are you sure you want to overwrite the existing theme data?"
 msgstr "¿Estás seguro de querer sobreescribir los datos existentes del tema?"
 
-#: includes/class.strings.php:58
+#: includes/class.strings.php:65
 msgid "No picture found"
 msgstr "No se ha encontrado ninguna imagen"
 
-#: includes/class.strings.php:56
+#: includes/class.strings.php:63
 msgid "Please fill out both the \"from\" and \"to\" fields"
 msgstr "Por favor, completa los campos «desde» y «a»"
 
-#: includes/class.strings.php:55
+#: includes/class.strings.php:62
 msgid "Unknown directions service status"
 msgstr "Estado del servicio de direcciones desconocido"
 
-#: includes/class.strings.php:54
+#: includes/class.strings.php:61
 msgid "Fetching directions..."
 msgstr "Obteniendo direcciones…"
 
-#: includes/class.strings.php:52
+#: includes/class.strings.php:59
 msgid "No GPS coordinates found"
 msgstr "No se han encontrado coordenadas GPS"
-
-#: includes/class.strings.php:47
-msgid "Couldn't find this address"
-msgstr "No se pudo encontrar esta dirección"
 
 #: includes/legacy/settings-page.php:417
 msgid "Removes the need to use two fingers to move the map on mobile devices, removes 'Use ctrl + scroll to zoom the map'"
@@ -555,9 +559,9 @@ msgstr "Desactivar la corrección de compatibilidad de Autopimize"
 
 #: html/settings-page.html.php:511 includes/legacy/settings-page.php:612
 msgid "Flush Geocode Cache"
-msgstr "Vaciar caché de Geocode"
+msgstr "Purgar la caché de Geocode"
 
-#: includes/class.strings.php:50
+#: includes/class.strings.php:57
 msgid "You must check the GDPR consent box to continue"
 msgstr "Debes marcar la casilla de consentimiento de RGPD para continuar"
 
@@ -565,11 +569,11 @@ msgstr "Debes marcar la casilla de consentimiento de RGPD para continuar"
 msgid "The plugins autoloader failed to register one or more modules. This is usually due to missing files. Please re-install the plugin and any relevant add-ons. Technical details are as follows: "
 msgstr "El autocargador de plugins no pudo registrar uno o más módulos. Normalmente es por que faltan archivos. Por favor, reinstala el plugin y todos las extensiones relevantes. Los detalles técnicos son los siguientes:"
 
-#: includes/class.plugin.php:490
+#: includes/class.plugin.php:492
 msgid "The plugin cannot initialise due to a fatal error. This is usually due to missing files or incompatible software. Please re-install the plugin and any relevant add-ons. We recommend that you use at least PHP 5.6. Technical details are as follows: "
 msgstr "El plugin no pudo iniciarse debido a un error fatal. Normalmente eso se debe a que faltan archivos o software incompatible. Por favor, reinstala el plugin y todas las extensiones relevantes. Te recomendamos que utilices al menos PHP 5.6. Los detalles técnicos son los siguientes:"
 
-#: wpGoogleMaps.php:1418
+#: wpGoogleMaps.php:1466
 msgid "The plugin failed to load due to a fatal error. This is usually due to missing files, or incompatible software. Please re-install the plugin. We recommend you use PHP 5.6 or above. Technical details are as follows: "
 msgstr "El plugin no pudo cargarse debido a un error fatal. Normalmente eso se debe a que faltan archivos o software incompatible. Por favor, reinstala el plugin. Te recomendamos que utilices al menos PHP 5.6. Los detalles técnicos son los siguientes:"
 
@@ -577,15 +581,15 @@ msgstr "El plugin no pudo cargarse debido a un error fatal. Normalmente eso se d
 msgid "<strong>WP Google Maps:</strong> Cannot find the specified XML folder. This has been switched back to the Database method in Maps -> Settings -> Advanced"
 msgstr "<strong>WP Google Maps:</strong> No se puede encontrar la carpeta XML especificada. Se ha cambiado al método por base de datos en Mapas -> Ajustes -> Avanzado"
 
-#: includes/class.strings.php:48
+#: includes/class.strings.php:55
 msgid "Geocode failed due to technical reasons"
 msgstr "Geocode falló debido a motivos técnicos"
 
-#: includes/class.strings.php:45
+#: includes/class.strings.php:52
 msgid "Please Wait..."
 msgstr "Por favor, espera…"
 
-#: includes/class.strings.php:42
+#: includes/class.strings.php:49
 msgid "No address specified"
 msgstr "No se ha especificado ninguna dirección"
 
@@ -623,19 +627,19 @@ msgstr "Algunos plugins de almacenamiento en caché y optimización continuarán
 msgid "Our GDPR notice will be displayed whenever the agreement cookie is not set. Agreeing to the notice will set this cookie."
 msgstr "Nuestro aviso de RGPD se mostrará siempre que no se haya establecido la cookie de aceptación. Al aceptar el aviso, se instalará esta cookie."
 
-#: includes/class.strings.php:40
+#: includes/class.strings.php:47
 msgid "Importing, this may take a moment..."
 msgstr "Importando, puede tardar un poco..."
 
-#: includes/class.strings.php:39
+#: includes/class.strings.php:46
 msgid "Import completed."
 msgstr "Importación completada."
 
-#: includes/class.strings.php:34
+#: includes/class.strings.php:41
 msgid "My Location"
 msgstr "Mi ubicación"
 
-#: includes/class.strings.php:32
+#: includes/class.strings.php:39
 msgid "Failed to create marker %d - this marker cannot be placed on the map."
 msgstr "Fallo al crear el marcador %d - este marcador no se puede colocar en el mapa."
 
@@ -655,11 +659,11 @@ msgstr "Borrar en lote"
 msgid "Select All"
 msgstr "Seleccionar todo"
 
-#: wpGoogleMaps.php:1315 legacy-core.php:27
+#: wpGoogleMaps.php:1322 legacy-core.php:27
 msgid "<strong>WP Google Maps:</strong> This plugin requires the WordPress REST API, which does not appear to be present on this installation. Please update WordPress to version 4.7 or above."
 msgstr "<strong>WP Google Maps:</strong> Este plugin requiere la API REST de WordPress, que no parece estar presente en esta instalación. Por favor, actualiza WordPress a la versión 4.7 o superior."
 
-#: wpGoogleMaps.php:1299
+#: wpGoogleMaps.php:1306
 msgid "<strong>WP Google Maps:</strong> This plugin uses the DOMDocument class, which is unavailable on this server. Please contact your host to request they enable this library."
 msgstr "<strong>WP Google Maps:</strong> Este plugin utiliza la clase DOMDocument, que no está disponible en este servidor. Ponte en contacto con tu alojamiento para solicitar que activen esta biblioteca."
 
@@ -693,7 +697,7 @@ msgstr ""
 msgid "Use my location"
 msgstr "Utilizar mi ubicación"
 
-#: includes/class.strings.php:31
+#: includes/class.strings.php:38
 msgid "Failed to get address"
 msgstr "Fallo al obtener la dirección"
 
@@ -776,27 +780,27 @@ msgid "We have detected a conflict between your current theme's version and our 
 msgstr "Hemos detectado un conflicto entre la versión de tu tema actual y nuestro plugin. Si tienes problemas con la visualización de tus mapas, actualiza Avada a la versión 3.9.4 o ve a la <a href='%s'>página de ajustes</a> y marca la casilla de verificación resaltada."
 
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:155
-#: js/v8/wp-google-maps.combined.js:7184
+#: js/v8/wp-google-maps.combined.js:7205
 msgid "Your map will appear here on your websites front end"
 msgstr "Tu mapa aparecerá aquí en la portada de tus webs "
 
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:124
-#: js/v8/wp-google-maps.combined.js:7153
+#: js/v8/wp-google-maps.combined.js:7174
 msgid "View Documentation"
 msgstr "Ver documentación"
 
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:112
-#: js/v8/wp-google-maps.combined.js:7141
+#: js/v8/wp-google-maps.combined.js:7162
 msgid "Go to Map Editor"
 msgstr "Ir al editor de mapas"
 
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:144
-#: js/v8/wp-google-maps.combined.js:7173
+#: js/v8/wp-google-maps.combined.js:7194
 msgid "Google"
 msgstr "Google"
 
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:144
-#: js/v8/wp-google-maps.combined.js:7173
+#: js/v8/wp-google-maps.combined.js:7194
 msgid "Map"
 msgstr "Mapa"
 
@@ -828,11 +832,11 @@ msgstr "Han ocurrido uno o más errores al intentar iniciar la API de mapas."
 msgid "Maps API Error"
 msgstr "Error de la API de mapas"
 
-#: includes/class.strings.php:29
+#: includes/class.strings.php:36
 msgid "Verify Project"
 msgstr "Comprobar proyecto"
 
-#: includes/class.strings.php:28
+#: includes/class.strings.php:35
 msgid "API Dashboard"
 msgstr "Escritorio de la API"
 
@@ -950,7 +954,7 @@ msgstr "Modo desarrollador"
 msgid "Maps Engine:"
 msgstr "Motor de mapas:"
 
-#: wpGoogleMaps.php:1283
+#: wpGoogleMaps.php:1290
 msgid "<strong>WP Google Maps:</strong> This plugin does not support PHP version 5.2 or below. Please use your cPanel or contact your host to switch version."
 msgstr "<strong>WP Google Maps:</strong> Este plugin no funciona con PHP versión 5.2 o anteriores. Utiliza tu cPanel o habla con tu hospedaje para cambiar de versión."
 
@@ -1325,7 +1329,7 @@ msgstr "Radio por defecto"
 msgid "Disable InfoWindows"
 msgstr "Desactivar las ventanas de información"
 
-#: includes/class.store-locator.php:92 includes/class.strings.php:46
+#: includes/class.store-locator.php:92 includes/class.strings.php:53
 #: legacy-core.php:2948
 msgid "No results found in this location. Please try again."
 msgstr "No se han encontrado resultados en esta ubicación. Vuelve a intentarlo."
@@ -1600,7 +1604,7 @@ msgstr "Cerrar"
 
 #. Description of the plugin
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:141
-#: js/v8/wp-google-maps.combined.js:7170
+#: js/v8/wp-google-maps.combined.js:7191
 msgid "The easiest to use Google Maps plugin! Create custom Google Maps with high quality markers containing locations, descriptions, images and links. Add your customized map to your WordPress posts and/or pages quickly and easily with the supplied shortcode. No fuss."
 msgstr "¡El complemento de Google Maps más fácil de usar! Crea mapas personalizados de Google con marcadores de alta calidad que contienen ubicaciones, descripciones, imágenes y enlaces. Agregue su mapa personalizado a sus publicaciones y / o páginas de WordPress rápida y fácilmente con el código corto suministrado. Sin problemas."
 
@@ -1673,7 +1677,7 @@ msgstr "Documentación:"
 msgid "Getting started? Read through some of these articles to help you along your way."
 msgstr "¿Empezando? Lea algunos de estos artículos para ayudarle en su camino."
 
-#: base/includes/credits.php:115 includes/class.strings.php:27
+#: base/includes/credits.php:115 includes/class.strings.php:34
 #: legacy-core.php:4994
 msgid "Documentation"
 msgstr "Documentación"
@@ -1835,7 +1839,7 @@ msgstr "Recuerda guardar tu marcador"
 msgid "Saving"
 msgstr "Guardando"
 
-#: includes/class.strings.php:44 legacy-core.php:3930
+#: includes/class.strings.php:51 legacy-core.php:3930
 msgid "Save Marker"
 msgstr "Guardar marcador"
 
@@ -1843,7 +1847,7 @@ msgstr "Guardar marcador"
 msgid "Adding"
 msgstr "Añadiendo"
 
-#: includes/class.strings.php:43 legacy-core.php:3929 legacy-core.php:4013
+#: includes/class.strings.php:50 legacy-core.php:3929 legacy-core.php:4013
 msgid "Add Marker"
 msgstr "Añadir marcador"
 
@@ -2538,7 +2542,7 @@ msgstr "Ajustes generales del mapa"
 
 #: includes/legacy/settings-page.php:183
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:102
-#: js/v8/wp-google-maps.combined.js:7131
+#: js/v8/wp-google-maps.combined.js:7152
 msgid "Map Settings"
 msgstr "Ajustes del mapa"
 
@@ -2585,7 +2589,7 @@ msgstr "Se produjo un problema al duplicar el mapa."
 #: base/includes/full-screen-module.php:40
 #: includes/legacy/settings-page.php:334 includes/legacy/settings-page.php:353
 #: includes/legacy/settings-page.php:409 includes/legacy/settings-page.php:417
-#: includes/legacy/settings-page.php:440 includes/class.strings.php:69
+#: includes/legacy/settings-page.php:440 includes/class.strings.php:76
 #: legacy-core.php:2519 legacy-core.php:2648 legacy-core.php:3292
 #: legacy-core.php:3296 legacy-core.php:3306 legacy-core.php:3333
 #: legacy-core.php:3477 legacy-core.php:3495 legacy-core.php:3504
@@ -2597,7 +2601,7 @@ msgstr "No"
 #: base/includes/full-screen-module.php:40
 #: includes/legacy/settings-page.php:334 includes/legacy/settings-page.php:352
 #: includes/legacy/settings-page.php:409 includes/legacy/settings-page.php:417
-#: includes/legacy/settings-page.php:440 includes/class.strings.php:68
+#: includes/legacy/settings-page.php:440 includes/class.strings.php:75
 #: legacy-core.php:2519 legacy-core.php:2648 legacy-core.php:3293
 #: legacy-core.php:3333 legacy-core.php:3477 legacy-core.php:3495
 #: legacy-core.php:3504 legacy-core.php:3515 legacy-core.php:3564
@@ -2649,7 +2653,7 @@ msgstr "Categorías"
 
 #: includes/legacy/settings-page.php:173 legacy-core.php:2445
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:144
-#: js/v8/wp-google-maps.combined.js:7173
+#: js/v8/wp-google-maps.combined.js:7194
 msgid "Maps"
 msgstr "Mapas"
 
@@ -2712,12 +2716,12 @@ msgstr "no existe"
 msgid "Error: The map ID"
 msgstr "Error: el ID de mapa"
 
-#: includes/class.strings.php:36 legacy-core.php:795 legacy-core.php:919
+#: includes/class.strings.php:43 legacy-core.php:795 legacy-core.php:919
 #: legacy-core.php:1726
 msgid "km away"
 msgstr "km de distancia"
 
-#: includes/class.strings.php:37 legacy-core.php:796 legacy-core.php:920
+#: includes/class.strings.php:44 legacy-core.php:796 legacy-core.php:920
 #: legacy-core.php:1727
 msgid "miles away"
 msgstr "millas de distancia"
@@ -2925,12 +2929,12 @@ msgstr "Añade tu mapa como widget"
 
 #. Plugin Name of the plugin
 #. Author of the plugin
-#: base/classes/widget_module.class.php:14 wpGoogleMaps.php:1376
-#: wpGoogleMaps.php:1415 includes/class.plugin.php:487
+#: base/classes/widget_module.class.php:14 wpGoogleMaps.php:1383
+#: wpGoogleMaps.php:1463 includes/class.plugin.php:489
 #: includes/class.maps-engine-dialog.php:166 includes/class.auto-loader.php:193
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:43
 #: js/v8/3rd-party-integration/gutenberg/dist/gutenberg.js:140
-#: js/v8/wp-google-maps.combined.js:7072 js/v8/wp-google-maps.combined.js:7169
+#: js/v8/wp-google-maps.combined.js:7093 js/v8/wp-google-maps.combined.js:7190
 msgid "WP Google Maps"
 msgstr "WP Google Maps"
 
