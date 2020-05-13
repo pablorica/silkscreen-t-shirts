@@ -43,61 +43,65 @@
 	}
 
 	if($('#estampado_delantero, #estampado_trasero').length > 0){
+
+		$('.pp_total').css('display', 'none');
+		var confCantMin = $('#pp_tipo_minqty').val();
+
 		var _letSend	= false,
+		
 		updatePrice		= function(e){
 			var _val	= $('#estampado_delantero').val()+' Tamaño '+$('#tamano_delantero').val()+'---'+$('#estampado_trasero').val()+' Tamaño '+$('#tamano_trasero').val();
+
 			_action		= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val() };
+
+			var cantidadMinima = 0;
 			$('#pp_sizes input').each(function(){
-				if(+$(this).val() != 0)
+				
+				if($(this).val() != 0){
 					_action[$(this).attr('name')] = $(this).val();
-
+					cantidadMinima += parseInt($(this).val());
+				}
 			});
+
 			if(_letSend !== false)	_letSend.abort();
-			$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
-			_letSend = $.post(ajaxurl, _action, function(response){
 
-				var r = response.split('---');
-				console.log(r);
-				$('.pp_cbar > .bar > span').width( (+r[0] * 100 / (+r[0] > pp_min ? +r[0] : pp_min))+'%' );
-				if(+r[0] >= pp_min)	$('.pp_cbar > .bar > span').css({'background-color': 'green'});
-				else			$('.pp_cbar > .bar > span').css({'background-color': 'red'});
-				console.log($('#tamano_delantero').val());
-				/*if($('#tamano_delantero').val() == $('#tamano_trasero').val() && $('#tamano_delantero').val() != "" && $('#tamano_trasero').val() != "" ){
-					$('#pp_total_b').val(r[1]+' und'+(+r[1] != 1 ? 's' : '')+'.');
-					$('#pp_total_c').val(r[2]+' und'+(+r[2] != 1 ? 's' : '')+'.');
-					$('#pp_total').val(r[0]+' und'+(+r[0] != 1 ? 's' : '')+'.');
-					$('#pp_total50').html(+r[0] > pp_min ? +r[0] : pp_min);
-					$('#pp_description').val(r[7]);
-					$('#TotalPriceIVA').html("<span class='woocommerce-Price-amount amount'>"+ ((r[6]*2) *1.21 ).toFixed(2)+"<span class='woocommerce-Price-currencySymbol'>&euro;</span></span>");
-					var ret = r[3].replace(" €","");
-					var total =  (r[6]*2) - (parseFloat(ret)*r[0]);
-					$('#TotalPrice').html("<span class='woocommerce-Price-amount amount'>"+ total  +"<span class='woocommerce-Price-currencySymbol'>&euro;</span></span>");
-					$('#pp_price_u').val(r[3]);
-					$('#pp_total').html(r[0]);
-					$('#pp_price').val(r[6]*2);
-					$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
-					console.log(r[0]);
-					console.log(r[3]);
-					console.log(total);
-					_letSend = false;
+			if(cantidadMinima >= confCantMin){
 
-				}*/
-			//	else{
-				$('#pp_total_b').val(r[1]+' und'+(+r[1] != 1 ? 's' : '')+'.');
-				$('#pp_total_c').val(r[2]+' und'+(+r[2] != 1 ? 's' : '')+'.');
-				$('#pp_total').val(r[0]+' und'+(+r[0] != 1 ? 's' : '')+'.');
-				$('#pp_total50').html(+r[0] > pp_min ? +r[0] : pp_min);
-				$('#pp_description').val(r[7]);
-				$('#TotalPriceIVA').html(r[5]);
-				$('#TotalPrice').html(r[4]);
-				$('#pp_price_u').val(r[3]);
-				$('#pp_total').html(r[0]);
-				$('#pp_price').val(r[6]);
-				$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
-				_letSend = false;
-		//	}
-			});
-			/*if(typeof e.keyCode != 'undefined' && e.keyCode == 13) return false;*/
+				$('.pp_total').css('display', 'block');
+
+				_letSend = $.ajax({
+					url: ajaxurl,
+					method: "POST",
+					data: _action,
+					beforeSend: function() {
+						$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
+					},
+					success: function( response ) {
+						var r = response.split('---');
+
+							$('#pp_total').html(r[0]);
+							$('#pp_description').val(r[7]);
+							$('#TotalPriceIVA').html(r[5]);
+							$('#TotalPrice').html(r[4]);
+							$('#pp_price_u').val(r[3]);
+							$('#pp_total_b').val(r[1]+' und'+(+r[1] != 1 ? 's' : '')+'.');
+							$('#pp_total_c').val(r[2]+' und'+(+r[2] != 1 ? 's' : '')+'.');
+							$('#pp_total').val(r[0]+' und'+(+r[0] != 1 ? 's' : '')+'.');
+							$('#pp_total50').html(+r[0] > pp_min ? +r[0] : pp_min);
+							$('#pp_price').val(r[6]);
+							$('#pp_total').html(r[0]);	
+							
+							total = r[0];
+						
+						$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
+						
+						_letSend = false;
+					}
+				});
+			} else {
+				$('.pp_total').css('display', 'none');
+			}
+			
 		};
 		$('#tamano_delantero, #tamano_trasero, #pp_sizes input').keydown(function(e){
 			if(typeof e.keyCode != 'undefined' && e.keyCode == 13) return false;
@@ -120,7 +124,8 @@
 			});
 		});
 		$('#pp_add_products').on('click', function(){
-			if(_letSend === false && +$('#pp_total').html() >= pp_min){
+
+			if(_letSend === false && total >= confCantMin){
 				$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
 				_letSend = $.post(ajaxurl, 'action=add_products&'+$('#pp_form').serialize(), function(response){
 					$('#pp_popup h3').html('Carrito de compras');
@@ -133,7 +138,7 @@
 				});
 			}else{
 				$('#pp_popup h3').html('Productos insuficientes');
-				$('#pp_popup p').html('Deben ser mínimo '+pp_min+' productos.');
+				$('#pp_popup p').html('Deben ser mínimo '+confCantMin+' productos.');
 				$('#pp_popup .buttons .btn').hide();
 				$('#pp_popup .buttons .cerrar').show();
 				$('#pp_popup').stop(true).fadeIn(500);
@@ -150,6 +155,8 @@
 			return false;
 		});
 	}
+
+	/* FUNCIÓN PARA SUBIR LOGOS DE LAS CAMISETAS */
 	if($('#pp_add_logo').length > 0){
 		$('#pp_add_logo').on('click', function(){
 			$('#pp_logo').click();
