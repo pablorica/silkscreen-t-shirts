@@ -60,7 +60,7 @@ web/**/.gitignore
 
 # Manual Installed Plugins #
 ############################
-# !web/app/plugins/advanced-custom-fields-pro/
+#!web/app/plugins/advanced-custom-fields-pro/
 !web/app/plugins/revslider/
 !web/app/plugins/wp-all-import-pro/
 !web/app/plugins/wpallimportxmlcsv229beta51/
@@ -69,5 +69,4 @@ web/**/.gitignore
 !web/app/plugins/wp-migrate-db-pro-media-files/
 !web/app/plugins/wp-meta-verify/
 !web/app/plugins/rf-configurador-productos/
-
-
+!web/app/plugins/ro-product-picker/
