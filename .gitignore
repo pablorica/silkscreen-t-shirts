@@ -68,4 +68,4 @@ web/**/.gitignore
 !web/app/plugins/wp-migrate-db-pro/
 !web/app/plugins/wp-migrate-db-pro-media-files/
 !web/app/plugins/wp-meta-verify/
-!web/app/plugins/rf-configurador-productos/
+!web/app/plugins/rf-configurador/
