@@ -1019,3 +1019,13 @@ div.pp_default .pp_description {
         /* styles for browsers larger than 960px; */
     }
 
+/* AJUSTES DE PRECIOS E INFO DE PRODUCTO */
+.price{
+	display: none !important;
+}
+.single_variation_wrap button:first-of-type {
+	display: none;
+}
+.pt20{
+	padding-top: 20px !important;
+}

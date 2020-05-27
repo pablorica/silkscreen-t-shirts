@@ -75,7 +75,7 @@ function woocommerce_toallas_title(){
 	$cat = isset($_GET['material']) ? get_term_by('slug', $_GET['material'], 'product_cat') : $cats[0];
 	echo '<h2 class="text-uppercase">'.$cat->name.'</h2>';
 	the_title('<h1 class="text-uppercase">', '</h1>');
-	echo '<p>&nbsp;</p>';
+	echo '<h2 class="pt20">Descripción</h2>';
 	the_content();
 }
 add_action('woocommerce_single_product_summary', 'woocommerce_toallas_title', 5);
@@ -171,3 +171,15 @@ function incluir_nif_en_factura($address){
 	echo '</p>';
 }
 add_filter('wpo_wcpdf_billing_address', 'incluir_nif_en_factura');
+
+/* Elimina pestaña Descripción e Información adicional */
+add_filter( 'woocommerce_product_tabs', 'jp_remove_tabs', 20, 1 );
+
+function jp_remove_tabs( $tabs ) {
+	if ( isset( $tabs['description'] ) ) unset( $tabs['description'] );
+	if ( isset( $tabs['additional_information'] ) ) unset( $tabs['additional_information'] );    	    
+    return $tabs;
+}
+
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
+add_action( 'woocommerce_single_product_summary', 'woocommerce_output_product_data_tabs', 60 );
