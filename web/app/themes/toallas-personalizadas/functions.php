@@ -75,8 +75,10 @@ function woocommerce_toallas_title(){
 	$cat = isset($_GET['material']) ? get_term_by('slug', $_GET['material'], 'product_cat') : $cats[0];
 	echo '<h2 class="text-uppercase">'.$cat->name.'</h2>';
 	the_title('<h1 class="text-uppercase">', '</h1>');
-	echo '<h2 class="pt20">Descripción</h2>';
-	the_content();
+	echo '<p>&nbsp;</p>';
+	//echo '<h2 class="pt20">Descripción</h2>';
+	//the_content();
+	the_excerpt();
 }
 add_action('woocommerce_single_product_summary', 'woocommerce_toallas_title', 5);
 
@@ -173,6 +175,7 @@ function incluir_nif_en_factura($address){
 add_filter('wpo_wcpdf_billing_address', 'incluir_nif_en_factura');
 
 /* Elimina pestaña Descripción e Información adicional */
+/*
 add_filter( 'woocommerce_product_tabs', 'jp_remove_tabs', 20, 1 );
 
 function jp_remove_tabs( $tabs ) {
@@ -180,6 +183,112 @@ function jp_remove_tabs( $tabs ) {
 	if ( isset( $tabs['additional_information'] ) ) unset( $tabs['additional_information'] );    	    
     return $tabs;
 }
+*/
 
 remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
 add_action( 'woocommerce_single_product_summary', 'woocommerce_output_product_data_tabs', 60 );
+
+
+
+//PRICE UNIT FIELD
+// https://wpdirecto.com/como-crear-un-campo-de-precio-nuevo-en-los-productos-de-woocommerce/
+// https://stackoverflow.com/questions/49984805/change-regular-price-text-in-woocommerce-admin-product-pages-settings
+/*
+add_filter('gettext', 'change_backend_product_regular_price', 100, 3 );
+function change_backend_product_regular_price( $translated_text, $text, $domain ) {
+    global $pagenow, $post_type;
+
+    if ( is_admin() && in_array( $pagenow, ['post.php', 'post-new.php'] )
+    && 'product' === $post_type && 'Regular price' === $text  && 'woocommerce' === $domain )
+    {
+        $translated_text =  __( 'Precio Unidad', $domain );
+    }
+    return $translated_text;
+}
+*/
+
+
+//PRICE BOX FIELDS
+// Backend Variation - Add / Display Custom Price Field
+add_action( 'woocommerce_variation_options_pricing', 'add_variation_options_pricing_box_price', 10, 3 );
+function add_variation_options_pricing_box_price( $loop, $variation_data, $variation ){
+
+/**/
+//PRICE UNIT FIELD and //PRICE PACK FIELD
+	echo '
+<style>
+label[for="variable_regular_price_'.$loop.'"] {
+	visibility: hidden;
+    position: relative;
+}
+label[for="variable_regular_price_'.$loop.'"]:after{
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 140px;
+    content:"Precio Unidad (€)";
+}
+
+label[for="variable_sale_price'.$loop.'"] {
+	visibility: hidden;
+    position: relative;
+}
+label[for="variable_sale_price'.$loop.'"]:after{
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 140px;
+    content:"Precio Paquete (€)";
+}
+</style>
+	';
+/**/
+
+	//PRICE BOX FIELD
+    woocommerce_wp_text_input( array(
+        'id' => 'variable_box_price_'.$loop,
+        'name' => 'variable_box_price['.$loop.']',
+        'wrapper_class' => 'form-row form-row-first',
+        'class' => 'short wc_input_price',
+        'label' => __( 'Precio Caja', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+        'value' => wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', true ) ),
+        'data_type' => 'price',
+    ) );
+}
+
+// Backend Variation - Save Custom Price Field value
+add_action( 'woocommerce_save_product_variation','save_variation_options_pricing_box_price',10 ,2 );
+function save_variation_options_pricing_box_price( $variation_id, $loop ){
+    if( isset($_POST['variable_box_price'][$loop]) ) {
+        update_post_meta( $variation_id, '_box_price', wc_clean( wp_unslash( str_replace( ',', '.', $_POST['variable_box_price'][$loop] ) ) ) );
+    }
+}
+
+// Frontend Variation - Custom Price display
+//add_filter( 'woocommerce_available_variation', 'display_variation_box_price', 10, 3 );
+function display_variation_box_price( $data, $product, $variation ) {
+
+    if( $bprice = $variation->get_meta('_box_price') ) {
+        $data['price_html'] = '<div class="woocommerce_box_price">' . __( 'Precio Caja: ', 'woocommerce' ) .
+        '<span class="box_price">' . wc_price( $bprice ) . '</span></div>' . $data['price_html'];
+    }
+
+    //echo wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', true ) );
+
+    return $data;
+}
+
+/* Getting prices
+
+Price Unit:
+echo wc_format_localized_price( $variation_object->get_regular_price() );
+Price Unit:
+echo wc_format_localized_price( $variation_object->get_sale_price() );
+Price Box:
+echo wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', true ) );
+*/
+
+
+
