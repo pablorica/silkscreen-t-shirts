@@ -149,11 +149,24 @@ function pp_settings()
 	{
 		$options = get_option('pp_options');
 		echo "	<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Cantidad mínima</p>
 					<input type=\"number\" name=\"pp_options[min_qty]\" value=\"{$options['min_qty']}\" style=\"width: 100%;\">
 				</div>
 				<div style=\"clear: both;\"></div>";
 	}
+	function pp_rango_precios()
+	{
+		$options = get_option('pp_options');
+		echo "	<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
+					<p>Aplicar precio unitario hasta nº de uds</p>
+					<input type=\"number\" name=\"pp_options[qty_price_unit]\" value=\"{$options['qty_price_unit']}\" style=\"width: 100%;\">
+				</div>
+				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
+					<p>Aplicar precio pack hasta nº de uds</p>
+					<input type=\"number\" name=\"pp_options[qty_price_pack]\" value=\"{$options['qty_price_pack']}\" style=\"width: 100%;\">
+				</div>
+				<div style=\"clear: both;\"></div>";
+	}
+
 	register_setting('pp_options', 'pp_options');
 	add_settings_section('pp_main', 'Product Picker', 'pp_main_text', 'rf-configurador-productos');
 	add_settings_field('pp_power', 'Estado: ', 'pp_power_str', 'rf-configurador-productos', 'pp_main');
@@ -161,6 +174,7 @@ function pp_settings()
 	add_settings_field('pp_tipos_estampacion', 'Tipos de estampación: ', 'pp_tipos_estampacion_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_porcentajes', 'Margen de beneficio por cantidades: ', 'pp_porcentajes_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_minqty', 'Cantidad mínima pedido: ', 'pp_minqty_str', 'rf-configurador-productos', 'pp_main');
+	add_settings_field('pp_rango_precios', 'Rango de precios por cantidades: ', 'pp_rango_precios', 'rf-configurador-productos', 'pp_main');
 }
 add_action('admin_init', 'pp_settings');
 
@@ -199,7 +213,7 @@ function ro_pp_custom_meta_callback()
 		} ?>
 		<tr>
 			<th style="text-transform: uppercase;padding: 15px 15px 0;text-align: right;">Cantidad mínima permitida</th>
-			<td colspan="2" style="padding: 15px 0 0;"><input name="ro_pp_meta[minimo]" type="number" value="<?php echo (int) $meta['minimo'] > 0 ? (int) $meta['minimo'] : 50; ?>" /></td>
+			<td colspan="2" style="padding: 15px 0 0;"><input name="ro_pp_meta[minimo]" type="number" value="<?php echo (int) $meta['minimo'] > 0 ? (int) $meta['minimo'] : 0; ?>" /></td>
 		</tr>
 		<tr>
 			<th style="text-transform: uppercase;padding: 15px 15px 0;text-align: right;">Se permite embolsado</th>
@@ -324,8 +338,15 @@ function pp_box()
 			</div>
 		</div>
 	</div>
+	<?php 
+		if ($meta['minimo'] >  0): //Cantidad mínima establecida por producto.
+			$minimo = $meta['minimo'];
+		else:
+			$minimo = get_option('pp_options')['min_qty']; //Cantidad mínima global.
+		endif;
+	?>
 	<form id="pp_form" class="pp_box">
-		<input type="hidden" id="pp_tipo_minqty" value="<?php echo get_option('pp_options')['min_qty']; ?>">
+		<input type="hidden" id="pp_tipo_minqty" value="<?=$minimo?>">
 		<h3>Elige el tipo de tu estampación para hacer tu presupuesto</h3>
 		<table>
 			<tr>
@@ -415,8 +436,7 @@ function pp_box()
 		</div>
 		<div id="pp_sizes" class="col-xs-12 col-sm-8 sw_precio">
 			<div class="pp_cbar">
-				<?php $unidades = get_option('pp_options')['min_qty']; ?>
-				<div><span style="color: red">Cantidad mínima de pedido <?php if($unidades > 1): echo $unidades . ' UDS'; else: echo $unidades . ' UD'; endif; ?></div>
+				<div><span style="color: red">Cantidad mínima de pedido <?=$minimo . ' UDS'; ?></div>
 			</div>
 			<?php
 			$colores = array();
@@ -481,7 +501,7 @@ function pp_load()
 	if ($options['power'] == 'on') {
 		add_action('woocommerce_before_single_product_summary', 'pp_price_mobile', 5);
 		add_action('woocommerce_single_variation', 'pp_price', 5);
-		add_action('woocommerce_after_single_product_summary', 'pp_box', 5);
+		add_action('woocommerce_after_single_product_summary', 'pp_box', 10);
 	}
 }
 add_action('plugins_loaded', 'pp_load');
@@ -544,6 +564,7 @@ function get_prices()
 	}
 	foreach ($variations1 as $value) {
 		$single_variation = new WC_Product_Variation($value);
+		//print_r($single_variation);
 		if (isset($_POST[$single_variation->slug])) {
 			$nk = false;
 			$attr = $single_variation->get_variation_attributes();
@@ -562,8 +583,27 @@ function get_prices()
 			$attr['attribute_pa_color'];
 			$miprecio = (float) $single_variation->price;
 			$total += (int) $_POST[$single_variation->slug];
-			$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->price;
-			$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->price;
+			/* Según las cantidades se aplicarán distintos precios */
+
+			if($total <= $options['qty_price_unit']): //Se aplica precio unitario
+
+				$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
+				$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
+
+			elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
+
+				$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->sale_price;
+				$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->sale_price;
+			
+			else: //Precio por caja.
+
+				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
+				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
+
+			//error_log($value);
+
+			endif;
+			
 			if (array_search(strtolower('blanco'), array_map('strtolower', $attr)) !== false) { //Prendas blancas.
 				$totalb += (int) $_POST[$single_variation->slug];
 				foreach ($tipos as $key => $value) { //Tipos de estampación
