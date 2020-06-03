@@ -214,7 +214,7 @@ add_action( 'woocommerce_variation_options_pricing', 'add_variation_options_pric
 function add_variation_options_pricing_box_price( $loop, $variation_data, $variation ){
 
 /**/
-//PRICE UNIT FIELD and //PRICE PACK FIELD
+//PRICE UNIT FIELD
 	echo '
 <style>
 label[for="variable_regular_price_'.$loop.'"] {
@@ -229,22 +229,23 @@ label[for="variable_regular_price_'.$loop.'"]:after{
     min-width: 140px;
     content:"Precio Unidad (€)";
 }
-
-label[for="variable_sale_price'.$loop.'"] {
-	visibility: hidden;
-    position: relative;
-}
-label[for="variable_sale_price'.$loop.'"]:after{
-    visibility: visible;
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 140px;
-    content:"Precio Paquete (€)";
+div.variable_pricing p[class*="variable_sale_price"]{
+	display:none
 }
 </style>
 	';
 /**/
+
+	//PRICE PACK FIELD
+    woocommerce_wp_text_input( array(
+        'id' => 'variable_pack_price_'.$loop,
+        'name' => 'variable_pack_price['.$loop.']',
+        'wrapper_class' => 'form-row form-row-last',
+        'class' => 'short wc_input_price',
+        'label' => __( 'Precio Paquete', 'woocommerce' ) . ' (' . get_woocommerce_currency_symbol() . ')',
+        'value' => wc_format_localized_price( get_post_meta( $variation->ID, '_pack_price', true ) ),
+        'data_type' => 'price',
+    ) );
 
 	//PRICE BOX FIELD
     woocommerce_wp_text_input( array(
@@ -259,8 +260,13 @@ label[for="variable_sale_price'.$loop.'"]:after{
 }
 
 // Backend Variation - Save Custom Price Field value
-add_action( 'woocommerce_save_product_variation','save_variation_options_pricing_box_price',10 ,2 );
-function save_variation_options_pricing_box_price( $variation_id, $loop ){
+add_action( 'woocommerce_save_product_variation','save_variation_options_custom_prices',10 ,2 );
+function save_variation_options_custom_prices( $variation_id, $loop ){
+
+	if( isset($_POST['variable_pack_price'][$loop]) ) {
+        update_post_meta( $variation_id, '_pack_price', wc_clean( wp_unslash( str_replace( ',', '.', $_POST['variable_pack_price'][$loop] ) ) ) );
+    }
+
     if( isset($_POST['variable_box_price'][$loop]) ) {
         update_post_meta( $variation_id, '_box_price', wc_clean( wp_unslash( str_replace( ',', '.', $_POST['variable_box_price'][$loop] ) ) ) );
     }
@@ -270,12 +276,15 @@ function save_variation_options_pricing_box_price( $variation_id, $loop ){
 //add_filter( 'woocommerce_available_variation', 'display_variation_box_price', 10, 3 );
 function display_variation_box_price( $data, $product, $variation ) {
 
+	if( $bprice = $variation->get_meta('_pack_price') ) {
+        $data['price_html'] = '<div class="woocommerce_pack_price">' . __( 'Precio Paquete: ', 'woocommerce' ) .
+        '<span class="pack_price">' . wc_price( $bprice ) . '</span></div>' . $data['price_html'];
+    }
+
     if( $bprice = $variation->get_meta('_box_price') ) {
         $data['price_html'] = '<div class="woocommerce_box_price">' . __( 'Precio Caja: ', 'woocommerce' ) .
         '<span class="box_price">' . wc_price( $bprice ) . '</span></div>' . $data['price_html'];
     }
-
-    //echo wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', true ) );
 
     return $data;
 }
@@ -284,8 +293,8 @@ function display_variation_box_price( $data, $product, $variation ) {
 
 Price Unit:
 echo wc_format_localized_price( $variation_object->get_regular_price() );
-Price Unit:
-echo wc_format_localized_price( $variation_object->get_sale_price() );
+Price Pack:
+echo wc_format_localized_price( get_post_meta( $variation->ID, '_pack_price', true ) );
 Price Box:
 echo wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', true ) );
 */

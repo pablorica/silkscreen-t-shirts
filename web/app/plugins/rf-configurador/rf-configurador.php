@@ -592,8 +592,8 @@ function get_prices()
 
 			elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
 
-				$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->sale_price;
-				$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->sale_price;
+				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
+				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
 			
 			else: //Precio por caja.
 
