@@ -157,12 +157,17 @@ function pp_settings()
 	{
 		$options = get_option('pp_options');
 		echo "	<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Aplicar precio unitario hasta nº de uds</p>
+					<p>Hasta nº de uds (inclusive):</p>
 					<input type=\"number\" name=\"pp_options[qty_price_unit]\" value=\"{$options['qty_price_unit']}\" style=\"width: 100%;\">
+					<p>se aplica precio unidad </p>
 				</div>
 				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Aplicar precio pack hasta nº de uds</p>
+					<p>Desde el nº de uds anterior hasta uds (inclusive):</p>
 					<input type=\"number\" name=\"pp_options[qty_price_pack]\" value=\"{$options['qty_price_pack']}\" style=\"width: 100%;\">
+					<p>se aplica precio paquete </p>
+				</div>
+				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
+					<p>A partir del nº de uds anterior se aplica precio caja.</p>
 				</div>
 				<div style=\"clear: both;\"></div>";
 	}
@@ -174,7 +179,7 @@ function pp_settings()
 	add_settings_field('pp_tipos_estampacion', 'Tipos de estampación: ', 'pp_tipos_estampacion_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_porcentajes', 'Margen de beneficio por cantidades: ', 'pp_porcentajes_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_minqty', 'Cantidad mínima pedido: ', 'pp_minqty_str', 'rf-configurador-productos', 'pp_main');
-	add_settings_field('pp_rango_precios', 'Rango de precios por cantidades: ', 'pp_rango_precios', 'rf-configurador-productos', 'pp_main');
+	add_settings_field('pp_rango_precios', 'Precio base: ', 'pp_rango_precios', 'rf-configurador-productos', 'pp_main');
 }
 add_action('admin_init', 'pp_settings');
 
