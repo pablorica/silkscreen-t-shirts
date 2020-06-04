@@ -4,21 +4,24 @@
 			$('.pp_tipo_titulo').keyup(function(e){
 				$(this).closest('.pp_tipo_group').find('.pp_delete_tipo span').html($(this).val());
 			});
+		};
 			$('.pp_delete_tipo').on('click', function(e){
-				var _ne	= 1,
-				_e		= +$(this).attr('e');
+				e.preventDefault();
+				//var _ne	= 1,
+				_e = +$(this).attr('e');
+				//console.log(_e);
 				$(this).closest('.pp_tipo_group').remove();
-				$('.pp_tipo_group').each(function(){
+			/*	$('.pp_tipo_group').each(function(){
 					$(this).find('.pp_delete_tipo').attr('e', _ne);
 					$(this).find('.pp_tipo_pc').attr('name', 'precio_color[tipo'+_ne+']');
 					$(this).find('.pp_tipo_pb').attr('name', 'precio_blanco[tipo'+_ne+']');
 					$(this).find('.pp_tipo_titulo').attr('name', 'pp_options[tipo'+_ne+']');
 					$(this).find('.pp_tipo_pp').attr('name', 'precio_pantalla[tipo'+_ne+']');
 					_ne++;
-				});
+				});*/
 				return false;
 			});
-		};
+	//	};
 		$('#pp_create_tipo').on('click', function(){
 			var _e = 1;
 			if($('#tipo_el .pp_tipo_group').length > 0) _e = +$('#tipo_el .pp_tipo_group:last .pp_delete_tipo').attr('e') + 1;
@@ -37,7 +40,7 @@
 						</div>\
 						<a href="#" class="pp_delete_tipo" e="'+_e+'">Eliminar "<span></span>"</a>\
 					</div>');
-			_pp_admin_reload();
+			//_pp_admin_reload();
 			return false;
 		});
 	}
