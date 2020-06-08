@@ -436,7 +436,7 @@ function pp_box()
 
 		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
 		<div class="row sidebar_configurator">
-			<div class="col-xs-12 col-sm-4 pull-right pp_total">
+			<div class="col-xs-12 col-lg-4 pull-right pp_total">
 					<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
 					<div>
 						<h3>Tu presupuesto</h3>
@@ -458,7 +458,7 @@ function pp_box()
 					<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
 					<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
 			</div>
-			<div id="pp_sizes" class="col-xs-12 col-sm-8 sw_precio">
+			<div id="pp_sizes" class="col-xs-12 col-lg-8 sw_precio">
 				<div class="pp_cbar">
 					<div><span style="color: red">Cantidad mínima de pedido <?= $minimo . ' UDS'; ?></div>
 				</div>
