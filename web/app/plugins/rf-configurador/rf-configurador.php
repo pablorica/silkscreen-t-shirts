@@ -158,17 +158,17 @@ function pp_settings()
 	{
 		$options = get_option('pp_options');
 		echo "	<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Hasta nº de uds (inclusive):</p>
+					<p>Rango del Precio Unidad</p>
 					<input type=\"number\" name=\"pp_options[qty_price_unit]\" value=\"{$options['qty_price_unit']}\" style=\"width: 100%;\">
-					<p>se aplica precio unidad </p>
+					<p>El precio unidad se aplica desde 1 hasta el número de unidades indicada en este campo.</p>
 				</div>
 				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Desde el nº de uds anterior hasta uds (inclusive):</p>
+					<p>Rango del Precio Paquete</p>
 					<input type=\"number\" name=\"pp_options[qty_price_pack]\" value=\"{$options['qty_price_pack']}\" style=\"width: 100%;\">
-					<p>se aplica precio paquete </p>
+					<p>El Precio Paquete se aplica desde el número indicado en el campo anterior (más 1) hasta el número de unidades indicada en este campo.</p>
 				</div>
 				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>A partir del nº de uds anterior se aplica precio caja.</p>
+					<p>El Precio Caja se aplica desde el número indicado en el campo anterior (más 1) en adelante.</p>
 				</div>
 				<div style=\"clear: both;\"></div>";
 	}
