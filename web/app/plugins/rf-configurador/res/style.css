@@ -332,3 +332,6 @@
 			padding: 6px 0;
 		}
 }
+.woocommerce-product-attributes-item__value a{
+	pointer-events: none;
+}

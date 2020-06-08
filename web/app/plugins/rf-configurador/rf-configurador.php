@@ -34,6 +34,7 @@ function rf_pp_scripts()
 	wp_enqueue_style('product_picker-plugin', plugins_url('res/style.css', __FILE__), array(), '1.0.2');
 
 	wp_enqueue_script('rf_pp_script', plugins_url('res/scripts.js', __FILE__), array('jquery'), '1.2', true);
+	wp_enqueue_script('rf_sticky', plugins_url('res/scrollfix.js', __FILE__), array('jquery'), '1.2', false);
 }
 add_action('wp_enqueue_scripts', 'rf_pp_scripts');
 add_action('admin_print_styles', 'rf_pp_scripts');
@@ -140,7 +141,7 @@ function pp_settings()
 					<input type=\"text\" name=\"pp_options[p100]\" value=\"{$options['p100']}\" style=\"width: 100%;\">
 				</div>
 				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Más de 50 productos</p>
+					<p>Desde la cantidad mínima</p>
 					<input type=\"text\" name=\"pp_options[p50]\" value=\"{$options['p50']}\" style=\"width: 100%;\">
 				</div>
 				<div style=\"clear: both;\"></div>";
@@ -172,6 +173,16 @@ function pp_settings()
 				<div style=\"clear: both;\"></div>";
 	}
 
+	function pp_texto_informativo()
+	{
+		$options = get_option('pp_options');
+		$settings = array(
+			'teeny' => true,
+			'textarea_name' => 'pp_options[info_text]'
+		);
+		wp_editor($options['info_text'], 'terms_wp_content', $settings);
+	}
+
 	register_setting('pp_options', 'pp_options');
 	add_settings_section('pp_main', 'Product Picker', 'pp_main_text', 'rf-configurador-productos');
 	add_settings_field('pp_power', 'Estado: ', 'pp_power_str', 'rf-configurador-productos', 'pp_main');
@@ -180,6 +191,7 @@ function pp_settings()
 	add_settings_field('pp_porcentajes', 'Margen de beneficio por cantidades: ', 'pp_porcentajes_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_minqty', 'Cantidad mínima pedido: ', 'pp_minqty_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_rango_precios', 'Precio base: ', 'pp_rango_precios', 'rf-configurador-productos', 'pp_main');
+	add_settings_field('pp_texto_informativo', 'Texto informativo: ', 'pp_texto_informativo', 'rf-configurador-productos', 'pp_main');
 }
 add_action('admin_init', 'pp_settings');
 
@@ -343,15 +355,15 @@ function pp_box()
 			</div>
 		</div>
 	</div>
-	<?php 
-		if ($meta['minimo'] >  0): //Cantidad mínima establecida por producto.
-			$minimo = $meta['minimo'];
-		else:
-			$minimo = get_option('pp_options')['min_qty']; //Cantidad mínima global.
-		endif;
+	<?php
+	if ($meta['minimo'] >  0) : //Cantidad mínima establecida por producto.
+		$minimo = $meta['minimo'];
+	else :
+		$minimo = get_option('pp_options')['min_qty']; //Cantidad mínima global.
+	endif;
 	?>
 	<form id="pp_form" class="pp_box">
-		<input type="hidden" id="pp_tipo_minqty" value="<?=$minimo?>">
+		<input type="hidden" id="pp_tipo_minqty" value="<?= $minimo ?>">
 		<h3>Elige el tipo de tu estampación para hacer tu presupuesto</h3>
 		<table>
 			<tr>
@@ -360,7 +372,7 @@ function pp_box()
 					<div>
 						<b>Tipo de estampación delantera</b><br>
 						<select id="estampado_delantero" name="estampado_delantero">
-							<option value="">Ninguno</option>
+							<option value="">Sin estampación</option>
 							<?php
 							foreach ($tipo as $key => $value) {
 								if ($meta[sanitize_title($value)] != 'off') {
@@ -373,7 +385,7 @@ function pp_box()
 					<div>
 						<b>Tipo de estampación trasera</b><br>
 						<select id="estampado_trasero" name="estampado_trasero">
-							<option value="">Ninguno</option>
+							<option value="">Sin estampación</option>
 							<?php
 							foreach ($tipo as $key => $value) {
 								if ($meta[sanitize_title($value)] != 'off') {
@@ -411,89 +423,97 @@ function pp_box()
 					<td>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="Si" class="pp_embolsado" style="width: 15px;height: 15px;vertical-align: sub;"> Si</span>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="No" class="pp_embolsado" checked style="width: 15px;height: 15px;vertical-align: sub;"> No</span>
+						<span style="display: inline-block;padding-right: 15px;" class="alert alert-info" role="alert">Si elijes la opción sin embolsado, te enviaremos tus prendas dobladas por la mitad y ordenadas por tallas.</span>
 					</td>
 				</tr>
 			<?php
 			} ?>
 		</table>
-		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
-		<div class="col-xs-12 col-sm-4 pull-right pp_total">
-			<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
-			<div>
-				<h3>Tu presupuesto</h3>
-				<div class="unidades">
-					<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
-					<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
-					<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
-					<div style="clear: both;"></div>
-				</div>
-				<div class="total">
-					<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
-					<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
-				</div>
-			</div>
-			<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
-			<p>&nbsp;</p>
-			<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
-			<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
-			<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
-			<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
+
+		<div class="alert alert-success" role="alert">
+			<?php echo $options['info_text']; ?>
 		</div>
-		<div id="pp_sizes" class="col-xs-12 col-sm-8 sw_precio">
-			<div class="pp_cbar">
-				<div><span style="color: red">Cantidad mínima de pedido <?=$minimo . ' UDS'; ?></div>
-			</div>
-			<?php
-			$colores = array();
-			$_product = wc_get_product(get_queried_object_id());
-			$variations1 = $_product->get_children();
-			$variations2 = array();
-			foreach ($variations1 as $value) {
-				$single_variation = new WC_Product_Variation($value);
-				$variations2[] = $single_variation;
-				$v = $single_variation->attributes;
-				$nk = false;
-				foreach ($colores as $k => $vc) {
-					if ($vc['color'] == $v['pa_color']) $nk = $k;
-				}
-				if ($nk === false) {
-					$colores[] = array(
-						'image'	=> wp_get_attachment_url($single_variation->image_id),
-						'color'	=> $v['pa_color'],
-						'sizes'	=> array()
-					);
-					end($colores);
-					$nk = key($colores);
-				}
-				$colores[$nk]['sizes'][] = $v['pa_tamano'];
-			}
-			foreach ($colores as $key => $value) { ?>
-				<div class="pp_product">
-					<span>
-						<div>
-							<img src="<?php echo $value['image']; ?>" alt=""><br>
-							<?php echo strtolower($value['color']); ?>
-						</div>
-					</span>
+
+		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
+		<div class="row sidebar_configurator">
+			<div class="col-xs-12 col-sm-4 pull-right pp_total">
+					<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
 					<div>
-						<div>
-							<?php
-							foreach ($value['sizes'] as $k => $v) {
-								$vid = 0;
-								foreach ($variations2 as $k2 => $v2) {
-									if ($v2->attributes['pa_color'] == $value['color'] && $v2->attributes['pa_tamano'] == $v) $vid = $v2->slug;
-								} ?>
-								<span>
-									<?php echo strtoupper($v); ?><br>
-									<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
-								</span>
-							<?php
-							} ?>
+						<h3>Tu presupuesto</h3>
+						<div class="unidades">
+							<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
+							<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
+							<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
+							<div style="clear: both;"></div>
+						</div>
+						<div class="total">
+							<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
+							<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
 						</div>
 					</div>
+					<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
+					<p>&nbsp;</p>
+					<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
+					<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
+					<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
+					<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
+			</div>
+			<div id="pp_sizes" class="col-xs-12 col-sm-8 sw_precio">
+				<div class="pp_cbar">
+					<div><span style="color: red">Cantidad mínima de pedido <?= $minimo . ' UDS'; ?></div>
 				</div>
-			<?php
-			} ?>
+				<?php
+				$colores = array();
+				$_product = wc_get_product(get_queried_object_id());
+				$variations1 = $_product->get_children();
+				$variations2 = array();
+				foreach ($variations1 as $value) {
+					$single_variation = new WC_Product_Variation($value);
+					$variations2[] = $single_variation;
+					$v = $single_variation->attributes;
+					$nk = false;
+					foreach ($colores as $k => $vc) {
+						if ($vc['color'] == $v['pa_color']) $nk = $k;
+					}
+					if ($nk === false) {
+						$colores[] = array(
+							'image'	=> wp_get_attachment_url($single_variation->image_id),
+							'color'	=> $v['pa_color'],
+							'sizes'	=> array()
+						);
+						end($colores);
+						$nk = key($colores);
+					}
+					$colores[$nk]['sizes'][] = $v['pa_tamano'];
+				}
+				foreach ($colores as $key => $value) { ?>
+					<div class="pp_product">
+						<span>
+							<div>
+								<img src="<?php echo $value['image']; ?>" alt=""><br>
+								<?php echo strtolower($value['color']); ?>
+							</div>
+						</span>
+						<div>
+							<div>
+								<?php
+								foreach ($value['sizes'] as $k => $v) {
+									$vid = 0;
+									foreach ($variations2 as $k2 => $v2) {
+										if ($v2->attributes['pa_color'] == $value['color'] && $v2->attributes['pa_tamano'] == $v) $vid = $v2->slug;
+									} ?>
+									<span>
+										<?php echo strtoupper($v); ?><br>
+										<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
+									</span>
+								<?php
+								} ?>
+							</div>
+						</div>
+					</div>
+				<?php
+				} ?>
+			</div>
 		</div>
 		<p>&nbsp;</p>
 		<p>&nbsp;</p>
@@ -590,25 +610,25 @@ function get_prices()
 			$total += (int) $_POST[$single_variation->slug];
 			/* Según las cantidades se aplicarán distintos precios */
 
-			if($total <= $options['qty_price_unit']): //Se aplica precio unitario
+			if ($total <= $options['qty_price_unit']) : //Se aplica precio unitario
 
 				$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
 				$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
 
-			elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
+			elseif ($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']) : //Precio por pack
 
-				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
-				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
-			
-			else: //Precio por caja.
+				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta($value, '_pack_price', true);
+				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta($value, '_pack_price', true);
 
-				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
-				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
+			else : //Precio por caja.
+
+				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta($value, '_box_price', true);
+				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta($value, '_box_price', true);
 
 			//error_log($value);
 
 			endif;
-			
+
 			if (array_search(strtolower('blanco'), array_map('strtolower', $attr)) !== false) { //Prendas blancas.
 				$totalb += (int) $_POST[$single_variation->slug];
 				foreach ($tipos as $key => $value) { //Tipos de estampación
@@ -653,10 +673,10 @@ function get_prices()
 		}
 	}
 	if ($total > 1000)		$percentprice = (int) $options['p1000'];
-	else if ($total > 750)	$percentprice = (int) $options['p750'];
-	else if ($total > 500)	$percentprice = (int) $options['p500'];
-	else if ($total > 250)	$percentprice = (int) $options['p250'];
-	else if ($total > 100)	$percentprice = (int) $options['p100'];
+	else if ($total >= 750)	$percentprice = (int) $options['p750'];
+	else if ($total >= 500)	$percentprice = (int) $options['p500'];
+	else if ($total >= 250)	$percentprice = (int) $options['p250'];
+	else if ($total >= 100)	$percentprice = (int) $options['p100'];
 	else					$percentprice = (int) $options['p50'];
 	$price += $aprice / 100 * $percentprice;
 	$price += $addpriceFrontal;

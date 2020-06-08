@@ -70,7 +70,12 @@
 
 			if(cantidadMinima >= confCantMin){
 
-				$('.pp_total').css('display', 'block');
+				$('.pp_total').css({'display':'block'});
+				/* sticky div */
+				if ($(window).width() > 1024) {
+					$('.pp_total').scrollFix();
+				
+				}
 
 				_letSend = $.ajax({
 					url: ajaxurl,
