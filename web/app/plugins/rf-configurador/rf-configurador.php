@@ -34,7 +34,6 @@ function rf_pp_scripts()
 	wp_enqueue_style('product_picker-plugin', plugins_url('res/style.css', __FILE__), array(), '1.0.2');
 
 	wp_enqueue_script('rf_pp_script', plugins_url('res/scripts.js', __FILE__), array('jquery'), '1.2', true);
-	wp_enqueue_script('rf_sticky', plugins_url('res/scrollfix.js', __FILE__), array('jquery'), '1.2', false);
 }
 add_action('wp_enqueue_scripts', 'rf_pp_scripts');
 add_action('admin_print_styles', 'rf_pp_scripts');
@@ -178,7 +177,8 @@ function pp_settings()
 		$options = get_option('pp_options');
 		$settings = array(
 			'teeny' => true,
-			'textarea_name' => 'pp_options[info_text]'
+			'textarea_name' => 'pp_options[info_text]',
+			'media_buttons' => false
 		);
 		wp_editor($options['info_text'], 'terms_wp_content', $settings);
 	}
@@ -285,38 +285,7 @@ function pp_price()
 			$min = (float) $single_variation->price;
 	}
 	$mp = $min + ($min / 100 * (int) $options['p1000']); ?>
-	<style>
-		.woo-product1 h1,
-		.woo-product1 h2 {
-			margin: 0;
-			padding: 0;
-		}
 
-		.woocommerce div.product form.cart .variations {
-			display: none;
-		}
-
-		.woocommerce div.product .range-price {
-			border: darkgray 1px solid;
-			display: inline-block;
-			padding: 7px 0;
-			vertical-align: top;
-		}
-
-		.woocommerce div.product .range-price>span {
-			color: black;
-			display: block;
-			line-height: 19px;
-			padding-right: 15px;
-			text-align: right;
-			width: 120px;
-		}
-
-		.woocommerce-variation,
-		.woocommerce-variation-add-to-cart {
-			display: none !important;
-		}
-	</style>
 	<button class="btn btn-danger" type="button"><small>Desde</small> <?php echo wc_price($mp); ?> <small>und.</small></button>
 	<button class="btn btn-danger pp-presupuesto">Haz tu presupuesto y compra</button>
 <?php
@@ -365,6 +334,7 @@ function pp_box()
 	<form id="pp_form" class="pp_box">
 		<input type="hidden" id="pp_tipo_minqty" value="<?= $minimo ?>">
 		<h3>Elige el tipo de tu estampación para hacer tu presupuesto</h3>
+		<!-- FORMULARIO DE TIPOS DE ESTAMPACIÓN -->
 		<table>
 			<tr>
 				<th><span>1</span> Tipo de estampación</th>
@@ -423,44 +393,55 @@ function pp_box()
 					<td>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="Si" class="pp_embolsado" style="width: 15px;height: 15px;vertical-align: sub;"> Si</span>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="No" class="pp_embolsado" checked style="width: 15px;height: 15px;vertical-align: sub;"> No</span>
-						<span style="display: inline-block;padding-right: 15px;" class="alert alert-info" role="alert">Si elijes la opción sin embolsado, te enviaremos tus prendas dobladas por la mitad y ordenadas por tallas.</span>
+						<span style="display: inline-block;padding-right: 15px;">Si elijes la opción sin embolsado, te enviaremos tus prendas dobladas por la mitad y ordenadas por tallas.</span>
 					</td>
 				</tr>
 			<?php
 			} ?>
 		</table>
 
-		<div class="alert alert-success" role="alert">
-			<?php echo $options['info_text']; ?>
+		<div>
+			<?php echo wpautop($options['info_text']); ?>
 		</div>
 
 		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
 		<div class="row sidebar_configurator">
+			<!-- CAJETÍN DE TOTALES -->
 			<div class="col-xs-12 col-lg-4 pull-right pp_total">
-					<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
-					<div>
-						<h3>Tu presupuesto</h3>
-						<div class="unidades">
-							<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
-							<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
-							<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
-							<div style="clear: both;"></div>
-						</div>
-						<div class="total">
-							<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
-							<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
-						</div>
+				<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
+				<div>
+					<h3>Tu presupuesto</h3>
+					<div class="unidades">
+						<table id="tabla_precios">
+							<tr>
+								<th>Color</th>
+								<th>Talla</th>
+								<th>Uds</th>
+								<th>p/u</th>
+								<th class="text-right">Subtotal</th>
+							</tr>
+
+						</table>						
+						<div style="clear: both;"></div>
 					</div>
-					<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
-					<p>&nbsp;</p>
-					<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
-					<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
-					<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
-					<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
+					<div class="total">
+						<h4><small>Total:</small> <span id="totalPrice"></span> €</h4>
+						<h4><small>IVA:</small> <span id="iva"></span> %</h4>
+						<h5><span id="totalPriceIva"></span> <small>(IVA incluido)</small></h5>
+					</div>
+				</div>
+				<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
+				<p>&nbsp;</p>
+				<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
+				<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
+				<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
+				<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
 			</div>
+
+			<!-- CAJETÍN DE TALLAS Y COLORES -->
 			<div id="pp_sizes" class="col-xs-12 col-lg-8 sw_precio">
 				<div class="pp_cbar">
-					<div><span style="color: red">Cantidad mínima de pedido <?= $minimo . ' UDS'; ?></div>
+					<div><span style="color: red">Cantidad mínima de pedido <?= $minimo . ' UDS'; ?></span></div>
 				</div>
 				<?php
 				$colores = array();
@@ -488,6 +469,7 @@ function pp_box()
 				}
 				foreach ($colores as $key => $value) { ?>
 					<div class="pp_product">
+						<!-- Línea por color en el configurador -->
 						<span>
 							<div>
 								<img src="<?php echo $value['image']; ?>" alt=""><br>
@@ -495,7 +477,8 @@ function pp_box()
 							</div>
 						</span>
 						<div>
-							<div>
+						<!-- Línea de tallaje -->
+							<div id="<?= $key + 1; ?>">
 								<?php
 								foreach ($value['sizes'] as $k => $v) {
 									$vid = 0;
@@ -504,13 +487,22 @@ function pp_box()
 									} ?>
 									<span>
 										<?php echo strtoupper($v); ?><br>
-										<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
+										<select class="select-css" name="<?php echo $vid; ?>" autocomplete="off">
+											<option value="0">0</option>
+											<?php
+											for ($i = 1; $i < 500; $i++) { ?>
+												<option value="<?= $i; ?>"><?= $i; ?></option>
+											<?php }
+											?>
+										</select>
 									</span>
-								<?php
-								} ?>
+									
+								<?php } ?>
+								
 							</div>
 						</div>
 					</div>
+					<input id="fila-<?=$key+1; ?>" type="hidden" value="0">
 				<?php
 				} ?>
 			</div>
@@ -518,7 +510,7 @@ function pp_box()
 		<p>&nbsp;</p>
 		<p>&nbsp;</p>
 	</form>
-	<?php
+<?php
 }
 function pp_load()
 {
@@ -557,7 +549,7 @@ function get_sizes()
 add_action('wp_ajax_get_sizes', 'get_sizes');
 add_action('wp_ajax_nopriv_get_sizes', 'get_sizes');
 
-function get_prices()
+function get_prices() //Método a ejecutar en el action del Ajax Call.
 {
 	global $wpdb;
 	$options = get_option('pp_options');
@@ -565,17 +557,15 @@ function get_prices()
 	$pricc = array();
 	$pricb = array();
 	$pripp = array();
-	$pripe = array();
 	$_product = wc_get_product($_POST['pp_pid']);
-	$get = explode('---', (string) $_POST['name']);
+	$get = explode('---', (string) $_POST['name']); //nombre y tamaños de los estampados.
 	$variations1 = $_product->get_children();
 	$embprice = $options['embolsado'];
 	$colores = array();
-	$description = '';
 	$addpriceFrontal = 0;
 	$addpriceTrasero = 0;
-	$totalb = 0;
-	$totalc = 0;
+	//$totalb = 0; //Total productos blanco.
+	//$totalc = 0; //Total productos color.
 	$aprice = 0;
 	$total = 0;
 	$price = 0;
@@ -589,7 +579,7 @@ function get_prices()
 	}
 	foreach ($variations1 as $value) {
 		$single_variation = new WC_Product_Variation($value);
-		//print_r($single_variation);
+
 		if (isset($_POST[$single_variation->slug])) {
 			$nk = false;
 			$attr = $single_variation->get_variation_attributes();
@@ -606,7 +596,7 @@ function get_prices()
 			}
 			$colores[$nk]['sizes'][] = array($attr['attribute_pa_tamano'], (int) $_POST[$single_variation->slug]);
 			$attr['attribute_pa_color'];
-			$miprecio = (float) $single_variation->price;
+			//$miprecio = (float) $single_variation->price;
 			$total += (int) $_POST[$single_variation->slug];
 			/* Según las cantidades se aplicarán distintos precios */
 
@@ -630,14 +620,10 @@ function get_prices()
 			endif;
 
 			if (array_search(strtolower('blanco'), array_map('strtolower', $attr)) !== false) { //Prendas blancas.
-				$totalb += (int) $_POST[$single_variation->slug];
+				//$totalb = (int) $_POST[$single_variation->slug]; //Totales prendas blancas.
 				foreach ($tipos as $key => $value) { //Tipos de estampación
 
 					if ($get[0] == $value) { //Tenemos estampación frontal.
-						//single_variation->slug es la cantidad de cada producto.
-						// $precioaux =  $price += (int) $_POST[$single_variation->slug]; //Esto suma 1 euro por cada unidad añadida al carrito.
-						$precioaux = 0;
-						$por = $pricb[$key];
 						$price += (int) $_POST[$single_variation->slug] * (float) $pricb[$key];
 						if ($addpriceFrontal == 0) $addpriceFrontal = (float) $pripp[$key]; //Precio adicional por pantalla y fotolito.
 					}
@@ -648,7 +634,7 @@ function get_prices()
 					}
 				}
 			} else { //Prendas de color.
-				$totalc += (int) $_POST[$single_variation->slug];
+				//$totalc = (int) $_POST[$single_variation->slug]; //Totales prendas de color.
 
 				foreach ($tipos as $key => $value) {
 
@@ -665,11 +651,11 @@ function get_prices()
 			}
 		}
 	}
-	$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
+	//$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
 	foreach ($colores as $k => $v) {
-		$description .= ($k != 0 ? ' - ' : '') . ucfirst($v['color']) . ': ';
+		$color = ucfirst($v['color']);
 		foreach ($v['sizes'] as $k2 => $v2) {
-			$description .= ($k2 != 0 ? ', ' : '') . strtoupper($v2[0]) . ' (' . $v2[1] . ')';
+			$talla = strtoupper($v2[0]);
 		}
 	}
 	if ($total > 1000)		$percentprice = (int) $options['p1000'];
@@ -679,8 +665,8 @@ function get_prices()
 	else if ($total >= 100)	$percentprice = (int) $options['p100'];
 	else					$percentprice = (int) $options['p50'];
 	$price += $aprice / 100 * $percentprice;
-	$price += $addpriceFrontal;
-	$price += $addpriceTrasero;
+	//$price += $addpriceFrontal;
+	//$price += $addpriceTrasero;
 	if ($_POST['embolsado'] == 'Si')
 		$price += $total * $embprice;
 	$tax_p = 0;
@@ -690,9 +676,20 @@ function get_prices()
 		$tax_p = sprintf(_x('%.2f', '', 'wptheme.foundation'), $tax_rate['rate']);
 	}
 	//tax_p es el IVA.
-	$priceu = ($price + ($price / 100 * $tax_p)) / $total;
+	//$priceu = ($price + ($price / 100 * $tax_p)) / $total;
+	$fotolito = $addpriceFrontal + $addpriceTrasero;
 
-	echo $total . '---' . $totalb . '---' . $totalc . '---' . strip_tags(html_entity_decode(wc_price($priceu))) . '---' . wc_price($price) . '---' . wc_price($price + ($price / 100 * $tax_p)) . '---' . $price . '---' . $description . '---' . $precioaux . '---' . $por . '---' . $pripp[$key] . '---' . $addpriceFrontal . '---' . $addpriceTrasero;
+	$data = array(
+		'color' => $color,
+		'talla' => $talla,
+		'subTotal' => strip_tags(html_entity_decode(wc_price($price))),
+		'iva' => $tax_p,
+		'fotolito' => $fotolito,
+	);
+
+	echo json_encode($data);
+
+	//echo $total . '---' . $totalb . '---' . $totalc . '---' . strip_tags(html_entity_decode(wc_price($priceu))) . '---' . wc_price($price) . '---' . wc_price($price + ($price / 100 * $tax_p)) . '---' . $price . '---' . $talla . '---' . $color . '---' . $precioaux . '---' . $por . '---' . $pripp[$key] . '---' . $addpriceFrontal . '---' . $addpriceTrasero;
 	wp_die();
 }
 add_action('wp_ajax_get_prices', 'get_prices');
@@ -744,133 +741,6 @@ function update_custom_price($cart_object)
 	}
 }
 add_action('woocommerce_before_calculate_totals', 'update_custom_price', 1, 1);
-
-/* FUNCIÓN DE GESTIÓN DE LOGOTIPOS */
-function pp_add_logo($cart_object)
-{
-	global $wpdb, $woocommerce;
-	$tipos = array();
-	$options = get_option('pp_options');
-	$i = 1;
-	while (isset($options['tipo' . $i])) {
-		$tipos[] = $options['tipo' . $i];
-		$i++;
-	}
-	$is_estampacion = false;
-	foreach ($woocommerce->cart->cart_contents as $key => $value) {
-		foreach ($tipos as $k => $v) {
-			if (strpos($value['_custom_options']['description'], $v)) $is_estampacion = true;
-		}
-	};
-	if ($is_estampacion) {
-		woocommerce_form_field('pp_archivos', array(
-			'required'	=> true,
-			'type'		=> 'text',
-			'class'		=> array()
-		), $cart_object->get_value('pp_archivos')); ?>
-		<div class="woocommerce-additional-fields">
-			<h3>Añadir logo</h3>
-			<div class="woocommerce-additional-fields__field-wrapper">
-				<p>Recomendamos adjuntar los logotipos en formato vectorial. Si esto no es posible, adjuntar en los formatos disponibles, en caso de no ser aptos para impresión nos pondremos en contacto contigo.</p>
-				<a href="#" id="pp_add_logo" style="display: block;padding: 15px 30px;border: gray 1px solid;text-align: center;color: dimgray !important;border-radius: 8px;">
-					<h4>AÑADIR IMAGEN ></h4>
-					<h5>(Opcional, max. 5MB)</h5>
-				</a>
-				<p class="form-row notes" data-priority="" style="display: none;">
-					<label for="pp_logo" class="">Añadir imagen <span class="optional">(opcional)</span></label>
-					<span class="woocommerce-input-wrapper"><input type="file" name="pp_logo" id="pp_logo" accept="image/*,.pdf,.cdr,.ai,.psd,.eps"></span>
-				</p>
-				<table id="pp_files" style="width: 100%;"></table>
-			</div>
-		</div>
-	<?php
-	}
-}
-add_action('woocommerce_after_order_notes', 'pp_add_logo', 1, 5);
-
-function pp_add_logo_check()
-{
-	global $wpdb, $woocommerce;
-	$options = get_option('pp_options');
-	$i = 1;
-	while (isset($options['tipo' . $i])) {
-		$tipos[] = $options['tipo' . $i];
-		$i++;
-	}
-	$is_estampacion = false;
-	foreach ($woocommerce->cart->cart_contents as $key => $value) {
-		foreach ($tipos as $k => $v) {
-			if (strpos($value['_custom_options']['description'], $v)) $is_estampacion = true;
-		}
-	};
-	if ($is_estampacion && !$_POST['pp_archivos'])
-		wc_add_notice(__('Debe subir un archivo o no ha terminado de subir.'), 'error');
-}
-add_action('woocommerce_checkout_process', 'pp_add_logo_check');
-
-function pp_add_logo_save($order_id)
-{
-	global $wpdb, $woocommerce;
-	$options = get_option('pp_options');
-	$i = 1;
-	while (isset($options['tipo' . $i])) {
-		$tipos[] = $options['tipo' . $i];
-		$i++;
-	}
-	$is_estampacion = false;
-	foreach ($woocommerce->cart->cart_contents as $key => $value) {
-		foreach ($tipos as $k => $v) {
-			if (strpos($value['_custom_options']['description'], $v)) $is_estampacion = true;
-		}
-	};
-	if (!empty($_POST['pp_archivos']))
-		update_post_meta($order_id, 'pp_adjuntos', sanitize_text_field($_POST['pp_archivos']));
-}
-add_action('woocommerce_checkout_update_order_meta', 'pp_add_logo_save');
-
-function pp_logo_admin($order)
-{ ?>
-	<p>
-		<strong><?php echo __('Archivos adjuntos: ') ?>:</strong><br>
-		<?php
-		foreach (explode('+++', get_post_meta($order->id, 'pp_adjuntos', true)) as $key => $value) {
-			$el = explode('---', $value); ?>
-			<a href="<?php echo $el[0]; ?>" download><?php echo $el[1]; ?></a><br>
-		<?php
-		}; ?>
-	</p>
-<?php
-}
-add_action('woocommerce_admin_order_data_after_billing_address', 'pp_logo_admin', 10, 1);
-
-function save_logo()
-{
-	global $wpdb, $woocommerce;
-	$url = WP_CONTENT_URL . '/pp_logos/';
-	$path = WP_CONTENT_DIR . '/pp_logos/';
-	$filename = date('dmy') . '_' . basename($_FILES['file']["name"]);
-	$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-	echo $_POST['fid'];
-	if (in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'ai', 'crd', 'psd', 'pdf', 'eps', 'tiff')) && $_FILES['file']["size"] <= 5000000 && move_uploaded_file($_FILES['file']["tmp_name"], $path . $filename))
-		echo '---' . $url . $filename . '---' . $filename . '---' . $_FILES['file']["size"] . '---' . $ext;
-	else if (!in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'ai', 'crd', 'psd', 'pdf', 'eps', 'tiff')) || $_FILES['file']["size"] <= 5000000)
-		echo '---archivoinvalido';
-	else
-		echo '---maxsize';
-	wp_die();
-}
-add_action('wp_ajax_save_logo', 'save_logo');
-add_action('wp_ajax_nopriv_save_logo', 'save_logo');
-
-function pp_send_files($attachments, $id, $order)
-{
-	foreach (explode('+++', get_post_meta($order->id, 'pp_adjuntos', true)) as $key => $value) {
-		$el = explode('---', $value);
-		$attachments[] = WP_CONTENT_DIR . '/pp_logos/' . $el[1];
-	}
-	return $attachments;
-}
-add_filter('woocommerce_email_attachments', 'pp_send_files', 10, 3);
 
 function hide_standard_shipping_when_free_is_available($available_methods)
 {
