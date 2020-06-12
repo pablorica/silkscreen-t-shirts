@@ -66,6 +66,9 @@
 			/* Cantidades por talla */
 			var cantidad = $(this).val();
 
+			/* Variación del producto */
+			var variacion = $(this).attr("name");
+
 			var cantidadMinima = 0;
 			/* Suma todas las cantidades. */
 			$('#pp_sizes select').each(function(){
@@ -96,7 +99,7 @@
 					},
 					success: function( response ) {
 						var data = JSON.parse(response);
-
+						//console.log(data);
 						var tipo = data.color.toLowerCase();
 						var talla = data.talla;
 						var subTotal = data.subTotal;
@@ -127,12 +130,16 @@
 
 						/* Cálculo de la base imponible iva y total */
 						var baseImp = 0;
-						$('#tabla_precios input').each(function(){
+						$('#tabla_precios input[type=text]').each(function(){
 								baseImp += parseFloat($(this).val());
 						});
 						
 						$('#totalPrice').html(baseImp.toFixed(2));
+						$('#pp_price').val(baseImp.toFixed(2));
 						$('#iva').html(parseInt(data.iva));
+						$('#pp_description').val(function(){
+							return this.value + data.description;
+						});
 
 						var importeIva = (baseImp.toFixed(2) * data.iva)/100;
 
@@ -158,12 +165,13 @@
 			} else {
 				var _val = '';
 			}
+			
 
 			/* Proceso de recálculo para cada item. */
 			$('#pp_sizes select').each(function(){
 				if($(this).val() != 0){//Calcula solo si hay valor.
 					var cantidad = $(this).val();
-					_action	= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val() };
+					_action	= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val(), 'update': 1 };
 					_action[$(this).attr('name')] = cantidad; //Valor del selector actual.
 					
 					$.ajax({
@@ -204,13 +212,22 @@
 							});
 							
 							$('#totalPrice').html(baseImp.toFixed(2));
+							$('#pp_price').val(baseImp.toFixed(2));
 							$('#iva').html(parseInt(data.iva));
+
+							$('#pp_description').val(function(){
+								return this.value + data.description;
+							});
+
+							console.log(data.description);
 	
 							var importeIva = (baseImp.toFixed(2) * data.iva)/100;
 	
 							$('#totalPriceIva').html( (parseFloat(baseImp.toFixed(2))+parseFloat(importeIva)).toFixed(2) );
 
 							$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
+
+							_letSend = false;
 							
 						},
 						error: function(err){
@@ -248,20 +265,19 @@
 
 			if(_letSend === false){
 				$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
-				for (let index = 0; index < 3; index++) {
-					_letSend = $.post(ajaxurl, 'action=add_products&'+$('#pp_form').serialize(), function(response){
-						
-						_letSend = false;
-					});
-					
-				}
 
-				$('#pp_popup h3').html('Carrito de compras');
-						$('#pp_popup p').html('El carrito se ha actualizado exitosamente.');
-						$('#pp_popup .buttons .btn').hide();
-						$('#pp_popup .buttons .compra').show();
-						$('#pp_popup').stop(true).fadeIn(500);
-						$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
+				_letSend = $.post(ajaxurl, 'action=add_products&'+$('#pp_form').serialize(), function(response){
+
+					$('#pp_popup h3').html('Carrito de compras');
+					$('#pp_popup p').html('El carrito se ha actualizado exitosamente.');
+					$('#pp_popup .buttons .btn').hide();
+					$('#pp_popup .buttons .compra').show();
+					$('#pp_popup').stop(true).fadeIn(500);
+					$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
+					
+					//console.log(response);
+				_letSend = false; 
+				}); 
 				
 			}
 			//console.log($('#pp_form').serialize());

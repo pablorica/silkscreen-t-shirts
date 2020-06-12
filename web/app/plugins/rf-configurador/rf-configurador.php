@@ -562,10 +562,9 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 	$variations1 = $_product->get_children();
 	$embprice = $options['embolsado'];
 	$colores = array();
+	$description = '';
 	$addpriceFrontal = 0;
 	$addpriceTrasero = 0;
-	//$totalb = 0; //Total productos blanco.
-	//$totalc = 0; //Total productos color.
 	$aprice = 0;
 	$total = 0;
 	$price = 0;
@@ -596,7 +595,6 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 			}
 			$colores[$nk]['sizes'][] = array($attr['attribute_pa_tamano'], (int) $_POST[$single_variation->slug]);
 			$attr['attribute_pa_color'];
-			//$miprecio = (float) $single_variation->price;
 			$total += (int) $_POST[$single_variation->slug];
 			/* Según las cantidades se aplicarán distintos precios */
 
@@ -634,8 +632,6 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 					}
 				}
 			} else { //Prendas de color.
-				//$totalc = (int) $_POST[$single_variation->slug]; //Totales prendas de color.
-
 				foreach ($tipos as $key => $value) {
 
 					if ($get[0] == $value) { //Frontal.
@@ -651,11 +647,18 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 			}
 		}
 	}
-	//$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
+	$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
+
 	foreach ($colores as $k => $v) {
 		$color = ucfirst($v['color']);
+		if($_POST['update'] != 1):
+			$description .= ($k != 0 ? ' - ' : '') . ucfirst($v['color']) . ': ';
+		endif;
 		foreach ($v['sizes'] as $k2 => $v2) {
 			$talla = strtoupper($v2[0]);
+			if($_POST['update'] != 1):
+				$description .= ($k2 != 0 ? ', ' : '') . strtoupper($v2[0]) . ' (' . $v2[1] . ')';
+			endif;
 		}
 	}
 	if ($total > 1000)		$percentprice = (int) $options['p1000'];
@@ -665,8 +668,7 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 	else if ($total >= 100)	$percentprice = (int) $options['p100'];
 	else					$percentprice = (int) $options['p50'];
 	$price += $aprice / 100 * $percentprice;
-	//$price += $addpriceFrontal;
-	//$price += $addpriceTrasero;
+
 	if ($_POST['embolsado'] == 'Si')
 		$price += $total * $embprice;
 	$tax_p = 0;
@@ -676,7 +678,6 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 		$tax_p = sprintf(_x('%.2f', '', 'wptheme.foundation'), $tax_rate['rate']);
 	}
 	//tax_p es el IVA.
-	//$priceu = ($price + ($price / 100 * $tax_p)) / $total;
 	$fotolito = $addpriceFrontal + $addpriceTrasero;
 
 	$data = array(
@@ -685,20 +686,24 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 		'subTotal' => strip_tags(html_entity_decode(wc_price($price))),
 		'iva' => $tax_p,
 		'fotolito' => $fotolito,
+		'description' => $description
 	);
 
 	echo json_encode($data);
 
-	//echo $total . '---' . $totalb . '---' . $totalc . '---' . strip_tags(html_entity_decode(wc_price($priceu))) . '---' . wc_price($price) . '---' . wc_price($price + ($price / 100 * $tax_p)) . '---' . $price . '---' . $talla . '---' . $color . '---' . $precioaux . '---' . $por . '---' . $pripp[$key] . '---' . $addpriceFrontal . '---' . $addpriceTrasero;
 	wp_die();
 }
 add_action('wp_ajax_get_prices', 'get_prices');
 add_action('wp_ajax_nopriv_get_prices', 'get_prices');
 
+/* Función que añade productos al carrito */
 function add_products()
 {
 	global $wpdb, $woocommerce;
+	$woocommerce->cart->empty_cart();
+
 	$woocommerce->cart->add_to_cart($_POST['product_id']);
+
 	wp_die();
 }
 add_action('wp_ajax_add_products', 'add_products');
@@ -731,6 +736,8 @@ function pp_add_values($item_id, $values)
 	wc_add_order_item_meta($item_id, 'item_details', $values['_custom_options']['description']);
 }
 add_action('woocommerce_add_order_item_meta', 'pp_add_values', 1, 2);
+
+/* Actualiza el precio customizado */
 function update_custom_price($cart_object)
 {
 	foreach ($cart_object->cart_contents as $cart_item_key => $value) {
