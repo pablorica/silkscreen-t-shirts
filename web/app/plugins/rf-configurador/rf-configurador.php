@@ -414,6 +414,7 @@ function pp_box()
 					<div class="unidades">
 						<table id="tabla_precios">
 							<tr>
+								<th></th>
 								<th>Color</th>
 								<th>Talla</th>
 								<th>Uds</th>
@@ -487,14 +488,7 @@ function pp_box()
 									} ?>
 									<span>
 										<?php echo strtoupper($v); ?><br>
-										<select class="select-css" name="<?php echo $vid; ?>" autocomplete="off">
-											<option value="0">0</option>
-											<?php
-											for ($i = 1; $i < 500; $i++) { ?>
-												<option value="<?= $i; ?>"><?= $i; ?></option>
-											<?php }
-											?>
-										</select>
+										<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
 									</span>
 									
 								<?php } ?>
@@ -647,20 +641,19 @@ function get_prices() //Método a ejecutar en el action del Ajax Call.
 			}
 		}
 	}
-	$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
 
 	foreach ($colores as $k => $v) {
 		$color = ucfirst($v['color']);
-		if($_POST['update'] != 1):
-			$description .= ($k != 0 ? ' - ' : '') . ucfirst($v['color']) . ': ';
-		endif;
+		$description .= ($k != 0 ? ' - ' : '') . 'Color: ' . ucfirst($v['color']);
+
 		foreach ($v['sizes'] as $k2 => $v2) {
 			$talla = strtoupper($v2[0]);
-			if($_POST['update'] != 1):
-				$description .= ($k2 != 0 ? ', ' : '') . strtoupper($v2[0]) . ' (' . $v2[1] . ')';
-			endif;
+			$description .= ($k2 != 0 ? ', ' : '') . ' Talla: ' . strtoupper($v2[0] . ' ');
 		}
 	}
+	$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '<br> ';
+
+
 	if ($total > 1000)		$percentprice = (int) $options['p1000'];
 	else if ($total >= 750)	$percentprice = (int) $options['p750'];
 	else if ($total >= 500)	$percentprice = (int) $options['p500'];
@@ -700,7 +693,7 @@ add_action('wp_ajax_nopriv_get_prices', 'get_prices');
 function add_products()
 {
 	global $wpdb, $woocommerce;
-	$woocommerce->cart->empty_cart();
+	//$woocommerce->cart->empty_cart();
 
 	$woocommerce->cart->add_to_cart($_POST['product_id']);
 

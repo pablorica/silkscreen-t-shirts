@@ -52,7 +52,7 @@
 			
 			_action	= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val() };
 
-			_action[$(this).attr('name')] = $(this).val(); //Valor del selector actual.
+			_action[$(this).attr('name')] = $(this).val(); //Valor del input actual.
 
 			//var input = $('#fila-'+$(this).closest('div').attr('id'));
 
@@ -71,7 +71,7 @@
 
 			var cantidadMinima = 0;
 			/* Suma todas las cantidades. */
-			$('#pp_sizes select').each(function(){
+			$('#pp_sizes input').each(function(){
 				if($(this).val() != 0){
 					cantidadMinima += parseInt($(this).val());
 				}
@@ -102,27 +102,25 @@
 						//console.log(data);
 						var tipo = data.color.toLowerCase();
 						var talla = data.talla;
-						var subTotal = data.subTotal;
+						var subTotal = parseFloat(data.subTotal);
 						var pUnit = parseFloat(subTotal) / parseInt(cantidad);
 						var precioFotolito = data.fotolito;
 
 						/* Precio fotolitos */
 						if(precioFotolito > 0 && $("#fotolito").length == 0) {//Crea nuevo item
-							$('#tabla_precios').append('<tr id="fotolito"><td>Precio fotolitos</td><td></td><td></td><td></td><td class="text-right"><input id="fotoValor" type="text" value="'+precioFotolito+'" readonly></td></tr>');
+							$('#tabla_precios').append('<tr id="fotolito"><td></td><td>Precio fotolitos</td><td></td><td></td><td></td><td class="text-right"><input id="fotoValor" type="text" value="'+precioFotolito+'" readonly></td></tr>');
 						} else if(precioFotolito > 0 && $("#fotolito").length > 0){ //Actualiza las cantidades.
 							$('#fotoValor').val(precioFotolito);
 						} else {//Elimina item.
 							$("#fotolito").remove();
 						}	
 
-						/* Total de prendas blancas o de color */
-						//var total = input.val();
-
 						/* Añade o quita líneas del cajetín */
 						if($("#" + tipo + '-' + talla).length == 0) {//Crea nuevo item
-							$('#tabla_precios').append('<tr id="'+tipo+'-'+talla+'"><td>' + data.color + '</td><td>' + talla + '</td><td id="cant-' + tipo + '-' + talla + '">' + cantidad + '</td><td id="pu-' + tipo + '-' + talla + '">'+pUnit.toFixed(2)+'</td><td class="text-right"><input id="st-'+tipo+'-'+talla+'" type="text" value="'+subTotal+'" readonly></td></tr>');
+							$('#tabla_precios').append('<tr id="'+tipo+'-'+talla+'"><td><input class="desc" id="d-'+tipo+'-'+talla+'" type="hidden" value="' + data.description + '"></td><td>' + data.color + '</td><td>' + talla + '</td><td id="cant-' + tipo + '-' + talla + '">' + cantidad + '</td><td id="pu-' + tipo + '-' + talla + '">'+pUnit.toFixed(2)+'</td><td class="text-right"><input id="st-'+tipo+'-'+talla+'" type="text" value="'+subTotal+'" readonly></td></tr>');
 						} else if($("#" + tipo + '-' + talla).length > 0 && cantidad > 0){ //Actualiza las cantidades.
 							$('#cant-'+tipo+'-'+talla).html(cantidad);
+							$('#d-'+tipo+'-'+talla).val(data.description);
 							$('#st-'+tipo+'-'+talla).val(subTotal);
 						} else {//Elimina item.
 							$("#" + tipo + '-' + talla).remove();
@@ -137,9 +135,7 @@
 						$('#totalPrice').html(baseImp.toFixed(2));
 						$('#pp_price').val(baseImp.toFixed(2));
 						$('#iva').html(parseInt(data.iva));
-						$('#pp_description').val(function(){
-							return this.value + data.description;
-						});
+
 
 						var importeIva = (baseImp.toFixed(2) * data.iva)/100;
 
@@ -168,10 +164,10 @@
 			
 
 			/* Proceso de recálculo para cada item. */
-			$('#pp_sizes select').each(function(){
+			$('#pp_sizes input[type="number"]').each(function(){
 				if($(this).val() != 0){//Calcula solo si hay valor.
 					var cantidad = $(this).val();
-					_action	= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val(), 'update': 1 };
+					_action	= { 'action': 'get_prices', 'pp_pid': pp_pid, 'name': _val, 'embolsado': $('input[name=embolsado]:checked').val() };
 					_action[$(this).attr('name')] = cantidad; //Valor del selector actual.
 					
 					$.ajax({
@@ -192,13 +188,15 @@
 	
 							if($("#" + tipo + '-' + talla).length > 0 && cantidad > 0){ //Actualiza las cantidades.
 								$('#cant-'+tipo+'-'+talla).html(cantidad);
-								$('#pu-'+tipo+'-'+talla).html(pUnit);
+								$('#pu-'+tipo+'-'+talla).html(pUnit.toFixed(2));
 								$('#st-'+tipo+'-'+talla).val(subTotal);
+								$('#d-'+tipo+'-'+talla).val(data.description);
 							}
 
 							/* Precio fotolitos */
 							if(precioFotolito > 0 && $("#fotolito").length == 0) {//Crea nuevo item
-								$('#tabla_precios').append('<tr id="fotolito"><td>Precio fotolitos</td><td></td><td></td><td></td><td class="text-right"><input id="fotoValor" type="text" value="'+precioFotolito+'" readonly></td></tr>');
+								$('#tabla_precios').append('<tr id="fotolito"><td></td><td>Precio fotolitos</td><td></td><td></td><td></td><td class="text-right"><input id="fotoValor" type="text" value="'+precioFotolito+'" readonly></td></tr>');
+								$('#d-'+tipo+'-'+talla).val(data.description);
 							} else if(precioFotolito > 0 && $("#fotolito").length > 0){ //Actualiza las cantidades.
 								$('#fotoValor').val(precioFotolito);
 							} else {//Elimina item.
@@ -207,7 +205,7 @@
 
 							/* Cálculo de la base imponible iva y total */
 							var baseImp = 0;
-							$('#tabla_precios input').each(function(){
+							$('#tabla_precios input[type=text]').each(function(){
 									baseImp += parseFloat($(this).val());
 							});
 							
@@ -215,11 +213,6 @@
 							$('#pp_price').val(baseImp.toFixed(2));
 							$('#iva').html(parseInt(data.iva));
 
-							$('#pp_description').val(function(){
-								return this.value + data.description;
-							});
-
-							console.log(data.description);
 	
 							var importeIva = (baseImp.toFixed(2) * data.iva)/100;
 	
@@ -243,13 +236,14 @@
 
 
 		$('.pp_embolsado').change(configurePrice);//Evento al activar el embolsado.
-		$('#pp_sizes select').change(updatePrice);//Evento al seleccionar un artículo.
-		$('#tamano_delantero, #tamano_trasero').change(configurePrice);//Evento al seleccionar una estampación.
+		//$('#pp_sizes input').keyup(updatePrice);//Evento al seleccionar un artículo.
+		$('#pp_sizes input').change(updatePrice);//Evento al seleccionar un artículo.
+		$('#tamano_delantero, #tamano_trasero, #pp_sizes input').change(configurePrice);//Evento al seleccionar una estampación.
 		$('#estampado_delantero, #estampado_trasero').change(function(){//Evento al seleccionar el tipo de estampación.
 			var _val	= $(this).val(),
 			_target		= $(this).attr('id') == 'estampado_delantero' ? 'tamano_delantero' : 'tamano_trasero';
 			if(_letSend !== false)	_letSend.abort();
-			//$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
+			$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
 			_letSend = $.post(ajaxurl, { 'action': 'get_sizes', 'pp_pid': pp_pid, 'name': _val }, function(response){
 				if(_val == '')	$('#'+_target).attr('disabled', true).parent().addClass('disabled');
 				else 			$('#'+_target).removeAttr('disabled').parent().removeClass('disabled');
@@ -262,6 +256,11 @@
 
 		/* Envío de los datos al carrito */
 		$('#pp_add_products').on('click', function(){
+
+			var descriptionInput = $('#pp_description');
+			$('.desc').each(function(){
+				descriptionInput.val( descriptionInput.val() + $(this).val() );
+			});
 
 			if(_letSend === false){
 				$('#pp_form .pp_total .loading').stop(true).fadeIn(500);
