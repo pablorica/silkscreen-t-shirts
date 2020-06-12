@@ -301,3 +301,18 @@ echo wc_format_localized_price( get_post_meta( $variation->ID, '_box_price', tru
 
 
 
+/* WP ALL IMPORT SCRIPT */
+/* 
+AVOID IMPORTING DUPLICATES 
+* https://wordpress.org/support/topic/how-to-avoid-importing-duplicate-products/
+*
+* This hook is not necesary if we use the Unique Identifier {productcode[1]} - {modelname[1]}
+*/
+function my_is_post_to_create( $continue_import, $xml_node, $import_id ) {
+    global $wpdb;
+    $query = "SELECT `meta_value` FROM `" . $wpdb->prefix . "postmeta` WHERE `meta_key` = '_sku' AND `meta_value` = '" . $xml_node['productsku'] . "'";
+    $results = $wpdb->get_results( $query );
+    return ( empty( $results ) ) ? true : false;
+}
+//add_filter( 'wp_all_import_is_post_to_create', 'my_is_post_to_create', 10, 3 );
+
