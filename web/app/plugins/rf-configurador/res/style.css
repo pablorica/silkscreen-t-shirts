@@ -332,3 +332,8 @@
 			padding: 6px 0;
 		}
 }
+
+/* Links  en Informacion Adicional */
+.woocommerce-product-attributes-item__value a{
+	pointer-events: none;
+}

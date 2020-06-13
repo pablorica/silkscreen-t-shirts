@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Configurador Productos
-Plugin URI: http://roifacal.com
+Plugin URI: http://codigo.co.uk
 Description: Plugin para configurar diferentes combinaciones de productos.
-Version: 3.1
-Author: Roi Facal
-Author URI: http://roifacal.com
+Version: 3.5
+Author: Pablo Rica
+Author URI: https://codigo.co.uk/team/pablo-rica
 */
 
 /*require 'inc/plugin-update-checker.php';
@@ -140,7 +140,7 @@ function pp_settings()
 					<input type=\"text\" name=\"pp_options[p100]\" value=\"{$options['p100']}\" style=\"width: 100%;\">
 				</div>
 				<div style=\"box-sizing: border-box;float: left;padding-right: 15px;width: 33%;\">
-					<p>Más de 50 productos</p>
+					<p>Desde la cantidad mínima</p>
 					<input type=\"text\" name=\"pp_options[p50]\" value=\"{$options['p50']}\" style=\"width: 100%;\">
 				</div>
 				<div style=\"clear: both;\"></div>";
@@ -171,6 +171,26 @@ function pp_settings()
 				</div>
 				<div style=\"clear: both;\"></div>";
 	}
+	function pp_texto_embolsado()
+	{
+		$options = get_option('pp_options');
+		$value = 'Si elijes la opción sin embolsado, te enviaremos tus prendas dobladas por la mitad y ordenadas por tallas.';
+		if( isset($options['embolsado_text']) && $options['embolsado_text'] != '') {
+			$value = $options['embolsado_text'];
+		}
+		
+		echo "<input name=\"pp_options[embolsado_text]\" type=\"text\" value=\"{$value}\" style=\"width: 100%;\">";
+	}
+	function pp_texto_informativo()
+	{
+		$options = get_option('pp_options');
+		$settings = array(
+			'teeny' => true,
+			'textarea_name' => 'pp_options[info_text]',
+			'media_buttons' => false
+		);
+		wp_editor($options['info_text'], 'terms_wp_content', $settings);
+	}
 
 	register_setting('pp_options', 'pp_options');
 	add_settings_section('pp_main', 'Product Picker', 'pp_main_text', 'rf-configurador-productos');
@@ -180,6 +200,8 @@ function pp_settings()
 	add_settings_field('pp_porcentajes', 'Margen de beneficio por cantidades: ', 'pp_porcentajes_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_minqty', 'Cantidad mínima pedido: ', 'pp_minqty_str', 'rf-configurador-productos', 'pp_main');
 	add_settings_field('pp_rango_precios', 'Precio base: ', 'pp_rango_precios', 'rf-configurador-productos', 'pp_main');
+	add_settings_field('pp_texto_embolsado', 'Texto Embolsado: ', 'pp_texto_embolsado', 'rf-configurador-productos', 'pp_main');
+	add_settings_field('pp_texto_informativo', 'Texto informativo: ', 'pp_texto_informativo', 'rf-configurador-productos', 'pp_main');
 }
 add_action('admin_init', 'pp_settings');
 
@@ -360,7 +382,7 @@ function pp_box()
 					<div>
 						<b>Tipo de estampación delantera</b><br>
 						<select id="estampado_delantero" name="estampado_delantero">
-							<option value="">Ninguno</option>
+							<option value="">Sin estampación</option>
 							<?php
 							foreach ($tipo as $key => $value) {
 								if ($meta[sanitize_title($value)] != 'off') {
@@ -373,7 +395,7 @@ function pp_box()
 					<div>
 						<b>Tipo de estampación trasera</b><br>
 						<select id="estampado_trasero" name="estampado_trasero">
-							<option value="">Ninguno</option>
+							<option value="">Sin estampación</option>
 							<?php
 							foreach ($tipo as $key => $value) {
 								if ($meta[sanitize_title($value)] != 'off') {
@@ -411,11 +433,17 @@ function pp_box()
 					<td>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="Si" class="pp_embolsado" style="width: 15px;height: 15px;vertical-align: sub;"> Si</span>
 						<span style="display: inline-block;padding-right: 15px;"><input type="radio" name="embolsado" value="No" class="pp_embolsado" checked style="width: 15px;height: 15px;vertical-align: sub;"> No</span>
+						<span style="display: inline-block;padding-right: 15px;"><?php echo $options['embolsado_text']; ?></span>
 					</td>
 				</tr>
 			<?php
 			} ?>
 		</table>
+
+		<div>
+			<?php echo wpautop($options['info_text']); ?>
+		</div>
+
 		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
 		<div class="col-xs-12 col-sm-4 pull-right pp_total">
 			<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
