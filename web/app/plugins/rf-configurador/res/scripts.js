@@ -93,8 +93,15 @@
 							$('#pp_total50').html(+r[0] > pp_min ? +r[0] : pp_min);
 							$('#pp_price').val(r[6]);
 							$('#pp_total').html(r[0]);	
+
+							$('#tabla_precios tbody').html(r[13]);
+							$('#taxesRow').html(r[14]);
+
 							
 							total = r[0];
+
+							
+
 						
 						$('#pp_form .pp_total .loading').stop(true).fadeOut(0);
 						

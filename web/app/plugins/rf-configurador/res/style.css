@@ -131,6 +131,12 @@
 				text-align: right;
 				width: 80px;
 			}
+		#pp_form .pp_total .unidades#pp_unidades {
+			display:none;
+		}
+		#pp_form .pp_total .unidades #tabla_precios {
+			width: 100%;
+		}
 		#pp_form .pp_total .total {
 			padding: 15px 15px 10px;
 			text-align: right;

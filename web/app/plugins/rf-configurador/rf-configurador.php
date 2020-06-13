@@ -16,6 +16,8 @@ $MyUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 );*/
 
 
+const DEBUG_CONF =false;
+
 //	PLUGIN INIT
 function pp_init()
 {
@@ -450,15 +452,30 @@ function pp_box()
 				<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
 				<div>
 					<h3>Tu presupuesto</h3>
-					<div class="unidades">
+					<div id="pp_unidades" class="unidades">
 						<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
 						<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
 						<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
 						<div style="clear: both;"></div>
 					</div>
+					<div id="pp_tb_precios" class="unidades">
+						<table id="tabla_precios">
+							<thead>
+								<tr>
+									<th>Color</th>
+									<th>Talla</th>
+									<th>Precio</th>
+									<th>Unidades</th>
+									<th class="text-right">Importe</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
 					<div class="total">
-						<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
-						<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
+						<h5><small>Subotal:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h5>
+						<h5><small>IVA:</small> <span id="taxesRow"><?php echo wc_price(0); ?></span></h5>
+						<h4><small>Total:</small> <span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small></small></h4>
 					</div>
 				</div>
 				<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
@@ -497,7 +514,7 @@ function pp_box()
 					$colores[$nk]['sizes'][] = $v['pa_tamano'];
 				}
 				foreach ($colores as $key => $value) { ?>
-					<div class="pp_product">
+					<div class="pp_product" data-color="<?php echo strtolower($value['color']); ?>">
 						<span>
 							<div>
 								<img src="<?php echo $value['image']; ?>" alt=""><br>
@@ -512,7 +529,7 @@ function pp_box()
 									foreach ($variations2 as $k2 => $v2) {
 										if ($v2->attributes['pa_color'] == $value['color'] && $v2->attributes['pa_tamano'] == $v) $vid = $v2->slug;
 									} ?>
-									<span>
+									<span data-talla="<?php echo strtoupper($v); ?>">
 										<?php echo strtoupper($v); ?><br>
 										<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
 									</span>
@@ -589,6 +606,7 @@ function get_prices()
 	$aprice = 0;
 	$total = 0;
 	$price = 0;
+	$rowPrecios = array();
 	$i = 1;
 	while (isset($options['tipo' . $i])) {
 		$tipos[$i] = $options['tipo' . $i];
@@ -597,84 +615,132 @@ function get_prices()
 		$pripp[$i] = $options['precio_pantalla' . $i];
 		$i++;
 	}
-	foreach ($variations1 as $value) {
-		$single_variation = new WC_Product_Variation($value);
-		//print_r($single_variation);
-		if (isset($_POST[$single_variation->slug])) {
-			$nk = false;
-			$attr = $single_variation->get_variation_attributes();
-			foreach ($colores as $k => $vc) {
-				if ($vc['color'] == $vc['pa_color']) $nk = $k;
-			}
-			if ($nk === false) {
-				$colores[] = array(
-					'color'	=> $attr['attribute_pa_color'],
-					'sizes'	=> array()
-				);
-				end($colores);
-				$nk = key($colores);
-			}
-			$colores[$nk]['sizes'][] = array($attr['attribute_pa_tamano'], (int) $_POST[$single_variation->slug]);
-			$attr['attribute_pa_color'];
-			$miprecio = (float) $single_variation->price;
-			$total += (int) $_POST[$single_variation->slug];
-			/* Según las cantidades se aplicarán distintos precios */
 
-			if($total <= $options['qty_price_unit']): //Se aplica precio unitario
+	if($_product->is_type('variable')){
+    	$variations = $_product->get_available_variations();
 
-				$price += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
-				$aprice += (int) $_POST[$single_variation->slug] * (float) $single_variation->regular_price;
+    	foreach($variations as $variation) {
+        	$variation_obj  = wc_get_product($variation['variation_id']);
+        	$variation_slug = $variation_obj->get_slug();
 
-			elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
+        	//error_log(print_r($variation_obj->get_slug(), true ));
 
-				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
-				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_pack_price', true );
-			
-			else: //Precio por caja.
+        	if (isset($_POST[$variation_slug])) {
 
-				$price += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
-				$aprice += (int) $_POST[$single_variation->slug] * (float) get_post_meta( $value, '_box_price', true );
+        		$quantity   = (int) $_POST[$variation_slug];
+				$rowPrecio  = array();
+				$fotolPrice = 0;
+				$nk    		= false;
+				$attr 		= $variation['attributes'];
 
-			//error_log($value);
+				foreach ($colores as $k => $vc) {
+					if ($vc['color'] == $vc['pa_color']) $nk = $k;
+				}
+				if ($nk === false) {
+					$colores[] = array(
+						'color'	=> $attr['attribute_pa_color'],
+						'sizes'	=> array()
+					);
+					end($colores);
+					$nk = key($colores);
+				}
+				$colores[$nk]['sizes'][] = array($attr['attribute_pa_tamano'], $quantity);
+				//$attr['attribute_pa_color'];
+				$miprecio = (float) $variation_obj->get_price();
+				$total += $quantity;
+				/* Según las cantidades se aplicarán distintos precios */
 
-			endif;
-			
-			if (array_search(strtolower('blanco'), array_map('strtolower', $attr)) !== false) { //Prendas blancas.
-				$totalb += (int) $_POST[$single_variation->slug];
-				foreach ($tipos as $key => $value) { //Tipos de estampación
+				if($total <= $options['qty_price_unit']): //Se aplica precio unitario
 
-					if ($get[0] == $value) { //Tenemos estampación frontal.
-						//single_variation->slug es la cantidad de cada producto.
-						// $precioaux =  $price += (int) $_POST[$single_variation->slug]; //Esto suma 1 euro por cada unidad añadida al carrito.
-						$precioaux = 0;
-						$por = $pricb[$key];
-						$price += (int) $_POST[$single_variation->slug] * (float) $pricb[$key];
-						if ($addpriceFrontal == 0) $addpriceFrontal = (float) $pripp[$key]; //Precio adicional por pantalla y fotolito.
+					$uprice = (float) $variation_obj->get_regular_price();				
+
+				elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
+
+					$uprice = (float) get_post_meta( $value, '_pack_price', true );
+				
+				else: //Precio por caja.
+
+					$uprice = (float) get_post_meta( $value, '_box_price', true );
+
+				endif;
+
+				$price  += $quantity * $uprice;
+				$aprice += $quantity * $uprice;
+
+				$eprice = 0;
+
+				if (array_search(strtolower('blanco'), array_map('strtolower', $attr)) !== false) { //Prendas blancas.
+					$totalb += $quantity;
+					foreach ($tipos as $key => $value) { //Tipos de estampación
+
+						if ($get[0] == $value) { //Tenemos estampación frontal.
+							//single_variation->slug es la cantidad de cada producto.
+							// $precioaux =  $price += (int) $_POST[$variation_slug]; //Esto suma 1 euro por cada unidad añadida al carrito.
+							$precioaux = 0;
+							$por = $pricb[$key];
+							$eprice += (float) $pricb[$key];
+							$price  += $quantity * (float) $pricb[$key];
+							if ($addpriceFrontal == 0) {
+								$addpriceFrontal = (float) $pripp[$key]; //Precio adicional por pantalla y fotolito.
+								$fotolPrice += $addpriceFrontal;
+							}
+						}
+						if ($get[1] == $value) { //Tenemos estampación trasera.
+							$porTrasera = $pricb[$key]; //Precio estampación por prenda.
+							$eprice += (float) $pricb[$key];
+							$price  += $quantity * (float) $porTrasera;
+							if ($addpriceTrasero == 0) {
+								$addpriceTrasero = (float) $pripp[$key]; //Precio adicional por pantalla y fotolito.
+								$fotolPrice += $addpriceTrasero;
+							}
+						}
 					}
-					if ($get[1] == $value) { //Tenemos estampación trasera.
-						$porTrasera = $pricb[$key]; //Precio estampación por prenda.
-						$price += (int) $_POST[$single_variation->slug] * (float) $porTrasera;
-						if ($addpriceTrasero == 0) $addpriceTrasero = (float) $pripp[$key]; //Precio adicional por pantalla y fotolito.
+				} else { //Prendas de color.
+					$totalc += $quantity;
+
+					foreach ($tipos as $key => $value) {
+
+						if ($get[0] == $value) { //Frontal.
+
+							$eprice += (float) $pricc[$key];
+							$price  += $quantity * (float) $pricc[$key];
+							if ($addpriceFrontal == 0) {
+								$addpriceFrontal = (float) $pripp[$key];
+								$fotolPrice += $addpriceFrontal;
+							}
+						}
+
+						if ($get[1] == $value) { //Trasero.
+
+							$eprice += (float) $pricc[$key];
+							$price  += $quantity * (float) $pricc[$key];
+							if ($addpriceTrasero == 0) {
+								$addpriceTrasero = (float) $pripp[$key];
+								$fotolPrice += $addpriceTrasero;
+							}
+						}
 					}
 				}
-			} else { //Prendas de color.
-				$totalc += (int) $_POST[$single_variation->slug];
 
-				foreach ($tipos as $key => $value) {
 
-					if ($get[0] == $value) { //Frontal.
-						$price += (int) $_POST[$single_variation->slug] * (float) $pricc[$key];
-						if ($addpriceFrontal == 0) $addpriceFrontal = (float) $pripp[$key];
-					}
 
-					if ($get[1] == $value) { //Trasero.
-						$price += (int) $_POST[$single_variation->slug] * (float) $pricc[$key];
-						if ($addpriceTrasero == 0) $addpriceTrasero = (float) $pripp[$key];
-					}
+				
+				$rowPrecio["tp_uprecio_base"] = $uprice;
+				$rowPrecio["tp_eprecio"]  	  = $eprice;
+
+				$rowPrecio["tp_color"]    = $attr['attribute_pa_color'];
+				$rowPrecio["tp_tamano"]   = $attr['attribute_pa_tamano'];
+				$rowPrecio["tp_cant"]     = $quantity;				
+
+				if ($fotolPrice) {
+					$rowPrecio["tp_fotolito"] = $fotolPrice;
 				}
+				//error_log(print_r($rowPrecios, true));
+				$rowPrecios[] = $rowPrecio;
 			}
-		}
-	}
+        }
+    }
+
 	$description .= $total . ' productos' . ($_POST['embolsado'] == 'Si' ? ' embolsados' : '') . (in_array($get[0], $tipos) ? ' con estampación en pecho (' . $get[0] . ')' : '') . (in_array($get[1], $tipos) ? ' con estampación en espalda (' . $get[1] . ')' : '') . '. ';
 	foreach ($colores as $k => $v) {
 		$description .= ($k != 0 ? ' - ' : '') . ucfirst($v['color']) . ': ';
@@ -693,6 +759,33 @@ function get_prices()
 	$price += $addpriceTrasero;
 	if ($_POST['embolsado'] == 'Si')
 		$price += $total * $embprice;
+
+	$rowPreciosHTML    = '';
+	$rowPreciosHTMLEnd = '';
+	foreach($rowPrecios as $rowPrecio) {
+		$percen   = $rowPrecio["tp_uprecio_base"] * ($percentprice/100);
+		$nuprecio = $rowPrecio["tp_uprecio_base"]+ $rowPrecio["tp_eprecio"] + $percen;
+		if ($_POST['embolsado'] == 'Si') $nuprecio += $embprice;
+
+		$nqprecio = $nuprecio * $rowPrecio["tp_cant"];
+
+		if(DEBUG_CONF) {
+			$rowPreciosHTML .= '<tr><td class="tp_color">'.ucfirst($rowPrecio["tp_color"]).'</td><td class="tp_tamano">'.strtoupper($rowPrecio["tp_tamano"]).'</td><td class="tp_uprecio">'.wc_price($nuprecio).'  ('.$rowPrecio["tp_uprecio_base"].') ('.$rowPrecio["tp_eprecio"].') ('.$percen.')</td><td class="tp_cant">'.$rowPrecio["tp_cant"].'</td><td class="text-right tp_subtotal">'.wc_price($nqprecio).'</td></tr>';
+		} else {
+	
+			$rowPreciosHTML .= '<tr><td class="tp_color">'.ucfirst($rowPrecio["tp_color"]).'</td><td class="tp_tamano">'.strtoupper($rowPrecio["tp_tamano"]).'</td><td class="tp_uprecio">'.wc_price($nuprecio).'</td><td class="tp_cant">'.$rowPrecio["tp_cant"].'</td><td class="text-right tp_subtotal">'.wc_price($nqprecio).'</td></tr>';
+		}
+
+		if (isset($rowPrecio["tp_fotolito"])) {
+			$rowPreciosHTMLEnd .= '<tr><td class="tp_fotolito" colspan="4">Fotolito(s)</td><td class="text-right tp_subtotal">'.$rowPrecio["tp_fotolito"].' €</td></tr>';
+		}
+	}
+
+	$rowPreciosHTML .= $rowPreciosHTMLEnd;
+
+			
+
+
 	$tax_p = 0;
 	$tax_rates = WC_Tax::get_rates($_product->get_tax_class());
 	if (!empty($tax_rates)) {
@@ -700,9 +793,11 @@ function get_prices()
 		$tax_p = sprintf(_x('%.2f', '', 'wptheme.foundation'), $tax_rate['rate']);
 	}
 	//tax_p es el IVA.
+
+	$taxes  = wc_price($price / 100 * $tax_p);
 	$priceu = ($price + ($price / 100 * $tax_p)) / $total;
 
-	echo $total . '---' . $totalb . '---' . $totalc . '---' . strip_tags(html_entity_decode(wc_price($priceu))) . '---' . wc_price($price) . '---' . wc_price($price + ($price / 100 * $tax_p)) . '---' . $price . '---' . $description . '---' . $precioaux . '---' . $por . '---' . $pripp[$key] . '---' . $addpriceFrontal . '---' . $addpriceTrasero;
+	echo $total . '---' . $totalb . '---' . $totalc . '---' . strip_tags(html_entity_decode(wc_price($priceu))) . '---' . wc_price($price) . '---' . wc_price($price + ($price / 100 * $tax_p)) . '---' . $price . '---' . $description . '---' . $precioaux . '---' . $por . '---' . $pripp[$key] . '---' . $addpriceFrontal . '---' . $addpriceTrasero . '---' .$rowPreciosHTML. '---' .$taxes;
 	wp_die();
 }
 add_action('wp_ajax_get_prices', 'get_prices');
