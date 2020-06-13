@@ -93,8 +93,19 @@
 					padding: 6px 12px;
 					width: 100%;
 				}
+	#pp_form .sidebar_configurator {
+		position: relative;
+	}
 	#pp_form .pp_total {
 		position: relative;
+
+	}
+	@media screen and (min-width: 768px) {
+		#pp_form .pp_total {
+			position: -webkit-sticky; /* Safari */
+			position: sticky;
+			top:20px;
+		}
 	}
 		#pp_form .pp_total > div {
 			border: 1px solid gray;

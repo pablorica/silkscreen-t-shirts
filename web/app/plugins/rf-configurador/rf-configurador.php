@@ -445,83 +445,85 @@ function pp_box()
 		</div>
 
 		<h3>Elige colores y tallas para hacer tu presupuesto</h3>
-		<div class="col-xs-12 col-sm-4 pull-right pp_total">
-			<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
-			<div>
-				<h3>Tu presupuesto</h3>
-				<div class="unidades">
-					<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
-					<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
-					<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
-					<div style="clear: both;"></div>
-				</div>
-				<div class="total">
-					<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
-					<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
-				</div>
-			</div>
-			<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
-			<p>&nbsp;</p>
-			<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
-			<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
-			<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
-			<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
-		</div>
-		<div id="pp_sizes" class="col-xs-12 col-sm-8 sw_precio">
-			<div class="pp_cbar">
-				<div><span style="color: red">Cantidad mínima de pedido <?=$minimo . ' UDS'; ?></div>
-			</div>
-			<?php
-			$colores = array();
-			$_product = wc_get_product(get_queried_object_id());
-			$variations1 = $_product->get_children();
-			$variations2 = array();
-			foreach ($variations1 as $value) {
-				$single_variation = new WC_Product_Variation($value);
-				$variations2[] = $single_variation;
-				$v = $single_variation->attributes;
-				$nk = false;
-				foreach ($colores as $k => $vc) {
-					if ($vc['color'] == $v['pa_color']) $nk = $k;
-				}
-				if ($nk === false) {
-					$colores[] = array(
-						'image'	=> wp_get_attachment_url($single_variation->image_id),
-						'color'	=> $v['pa_color'],
-						'sizes'	=> array()
-					);
-					end($colores);
-					$nk = key($colores);
-				}
-				$colores[$nk]['sizes'][] = $v['pa_tamano'];
-			}
-			foreach ($colores as $key => $value) { ?>
-				<div class="pp_product">
-					<span>
-						<div>
-							<img src="<?php echo $value['image']; ?>" alt=""><br>
-							<?php echo strtolower($value['color']); ?>
-						</div>
-					</span>
-					<div>
-						<div>
-							<?php
-							foreach ($value['sizes'] as $k => $v) {
-								$vid = 0;
-								foreach ($variations2 as $k2 => $v2) {
-									if ($v2->attributes['pa_color'] == $value['color'] && $v2->attributes['pa_tamano'] == $v) $vid = $v2->slug;
-								} ?>
-								<span>
-									<?php echo strtoupper($v); ?><br>
-									<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
-								</span>
-							<?php
-							} ?>
-						</div>
+		<div class="row sidebar_configurator">
+			<div class="col-xs-12 col-md-5 col-lg-4 pull-right pp_total">
+				<div class="loading" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>
+				<div>
+					<h3>Tu presupuesto</h3>
+					<div class="unidades">
+						<div>Unidades blancas: <input id="pp_total_b" type="text" name="total_b" value="0 uds." disabled></div>
+						<div>Unidades de color: <input id="pp_total_c" type="text" name="total_c" value="0 uds." disabled></div>
+						<div style="margin-bottom: 15px;text-transform: none;">Precio unitario: <input id="pp_price_u" type="text" name="price_u" value="<?php echo strip_tags(wc_price(0)); ?>" disabled></div>
+						<div style="clear: both;"></div>
+					</div>
+					<div class="total">
+						<h4><small>Total:</small> <span id="TotalPrice"><?php echo wc_price(0); ?></span></h4>
+						<h5><span id="TotalPriceIVA"><?php echo wc_price(0); ?></span> <small>(IVA incluido)</small></h5>
 					</div>
 				</div>
-			<?php
-			} ?>
+				<button id="pp_add_products" class="btn btn-primary text-uppercase text-center">Añadir a la cesta</button>
+				<p>&nbsp;</p>
+				<input type="hidden" name="add-to-cart" value="<?php echo get_queried_object_id(); ?>">
+				<input type="hidden" name="product_id" value="<?php echo get_queried_object_id(); ?>">
+				<input id="pp_description" type="hidden" name="custom_options[description]" value=""><br>
+				<input id="pp_price" type="hidden" name="custom_options[custom_price]" value="0"><br>
+			</div>
+			<div id="pp_sizes" class="col-xs-12 col-md-7 col-lg-8 sw_precio">
+				<div class="pp_cbar">
+					<div><span style="color: red">Cantidad mínima de pedido <?=$minimo . ' UDS'; ?></div>
+				</div>
+				<?php
+				$colores = array();
+				$_product = wc_get_product(get_queried_object_id());
+				$variations1 = $_product->get_children();
+				$variations2 = array();
+				foreach ($variations1 as $value) {
+					$single_variation = new WC_Product_Variation($value);
+					$variations2[] = $single_variation;
+					$v = $single_variation->attributes;
+					$nk = false;
+					foreach ($colores as $k => $vc) {
+						if ($vc['color'] == $v['pa_color']) $nk = $k;
+					}
+					if ($nk === false) {
+						$colores[] = array(
+							'image'	=> wp_get_attachment_url($single_variation->image_id),
+							'color'	=> $v['pa_color'],
+							'sizes'	=> array()
+						);
+						end($colores);
+						$nk = key($colores);
+					}
+					$colores[$nk]['sizes'][] = $v['pa_tamano'];
+				}
+				foreach ($colores as $key => $value) { ?>
+					<div class="pp_product">
+						<span>
+							<div>
+								<img src="<?php echo $value['image']; ?>" alt=""><br>
+								<?php echo strtolower($value['color']); ?>
+							</div>
+						</span>
+						<div>
+							<div>
+								<?php
+								foreach ($value['sizes'] as $k => $v) {
+									$vid = 0;
+									foreach ($variations2 as $k2 => $v2) {
+										if ($v2->attributes['pa_color'] == $value['color'] && $v2->attributes['pa_tamano'] == $v) $vid = $v2->slug;
+									} ?>
+									<span>
+										<?php echo strtoupper($v); ?><br>
+										<input type="number" name="<?php echo $vid; ?>" value="0" min="0" max="500">
+									</span>
+								<?php
+								} ?>
+							</div>
+						</div>
+					</div>
+				<?php
+				} ?>
+			</div>
 		</div>
 		<p>&nbsp;</p>
 		<p>&nbsp;</p>
