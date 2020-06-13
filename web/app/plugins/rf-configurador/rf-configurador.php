@@ -16,7 +16,7 @@ $MyUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 );*/
 
 
-const DEBUG_CONF =false;
+const DEBUG_CONF = false;
 
 //	PLUGIN INIT
 function pp_init()
@@ -622,6 +622,7 @@ function get_prices()
     	foreach($variations as $variation) {
         	$variation_obj  = wc_get_product($variation['variation_id']);
         	$variation_slug = $variation_obj->get_slug();
+        	$variation_id   = $variation_obj->get_id();
 
         	//error_log(print_r($variation_obj->get_slug(), true ));
 
@@ -648,6 +649,7 @@ function get_prices()
 				//$attr['attribute_pa_color'];
 				$miprecio = (float) $variation_obj->get_price();
 				$total += $quantity;
+
 				/* Según las cantidades se aplicarán distintos precios */
 
 				if($total <= $options['qty_price_unit']): //Se aplica precio unitario
@@ -656,16 +658,20 @@ function get_prices()
 
 				elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
 
-					$uprice = (float) get_post_meta( $value, '_pack_price', true );
+					$uprice = (float) get_post_meta( $variation_id, '_pack_price', true );
 				
 				else: //Precio por caja.
 
-					$uprice = (float) get_post_meta( $value, '_box_price', true );
+					$uprice = (float) get_post_meta( $variation_id, '_box_price', true );
 
 				endif;
 
 				$price  += $quantity * $uprice;
 				$aprice += $quantity * $uprice;
+
+				if(DEBUG_CONF) {
+					$rowPrecio["debug"] = 'price1: '.$price.' | aprice1: .'.$aprice;
+				}
 
 				$eprice = 0;
 
@@ -722,6 +728,10 @@ function get_prices()
 					}
 				}
 
+				if(DEBUG_CONF) {
+					$rowPrecio["debug"] .= ' | price2: '.$price;
+				}
+
 
 
 				
@@ -755,10 +765,26 @@ function get_prices()
 	else if ($total >= 100)	$percentprice = (int) $options['p100'];
 	else					$percentprice = (int) $options['p50'];
 	$price += $aprice / 100 * $percentprice;
+	if(DEBUG_CONF) {
+		$rowDdebug = ' | priceT1: '.$price;
+	}
+
 	$price += $addpriceFrontal;
+	if(DEBUG_CONF) {
+		$rowDdebug .= ' | priceT2: '.$price;
+	}
+
 	$price += $addpriceTrasero;
+	if(DEBUG_CONF) {
+		$rowDdebug .= ' | priceT3: '.$price;
+	}
+
 	if ($_POST['embolsado'] == 'Si')
 		$price += $total * $embprice;
+	if(DEBUG_CONF) {
+		$rowDdebug .= ' | priceT4: '.$price;
+	}
+
 
 	$rowPreciosHTML    = '';
 	$rowPreciosHTMLEnd = '';
@@ -770,14 +796,21 @@ function get_prices()
 		$nqprecio = $nuprecio * $rowPrecio["tp_cant"];
 
 		if(DEBUG_CONF) {
-			$rowPreciosHTML .= '<tr><td class="tp_color">'.ucfirst($rowPrecio["tp_color"]).'</td><td class="tp_tamano">'.strtoupper($rowPrecio["tp_tamano"]).'</td><td class="tp_uprecio">'.wc_price($nuprecio).'  ('.$rowPrecio["tp_uprecio_base"].') ('.$rowPrecio["tp_eprecio"].') ('.$percen.')</td><td class="tp_cant">'.$rowPrecio["tp_cant"].'</td><td class="text-right tp_subtotal">'.wc_price($nqprecio).'</td></tr>';
+			$rowPreciosHTML .= '<tr><td class="tp_color">'.ucfirst($rowPrecio["tp_color"]).'</td><td class="tp_tamano">'.strtoupper($rowPrecio["tp_tamano"]).'</td><td class="tp_uprecio">'.wc_price($nuprecio).'<br/>('.$rowPrecio["tp_uprecio_base"].') ('.$rowPrecio["tp_eprecio"].') ('.$percen.')</td><td class="tp_cant">'.$rowPrecio["tp_cant"].'</td><td class="text-right tp_subtotal">'.wc_price($nqprecio).'</td></tr>';
+
+			$rowPreciosHTML .= '<tr><td class="tp_debug" colspan="5">'.$rowPrecio["debug"].'</td></tr>';
+
+			
 		} else {
 	
 			$rowPreciosHTML .= '<tr><td class="tp_color">'.ucfirst($rowPrecio["tp_color"]).'</td><td class="tp_tamano">'.strtoupper($rowPrecio["tp_tamano"]).'</td><td class="tp_uprecio">'.wc_price($nuprecio).'</td><td class="tp_cant">'.$rowPrecio["tp_cant"].'</td><td class="text-right tp_subtotal">'.wc_price($nqprecio).'</td></tr>';
 		}
 
 		if (isset($rowPrecio["tp_fotolito"])) {
-			$rowPreciosHTMLEnd .= '<tr><td class="tp_fotolito" colspan="4">Fotolito(s)</td><td class="text-right tp_subtotal">'.$rowPrecio["tp_fotolito"].' €</td></tr>';
+			$rowPreciosHTMLEnd .= '<tr><td class="tp_fotolito" colspan="4">Fotolito(s)</td><td class="text-right tp_subtotal">'.wc_price($rowPrecio["tp_fotolito"]).'</td></tr>';
+		}
+		if(DEBUG_CONF) {
+			$rowPreciosHTMLEnd .= '<tr><td class="tp_debug" colspan="5">'.$rowDdebug.'</td></tr>';
 		}
 	}
 
