@@ -680,11 +680,11 @@ function get_prices()
 			$description .= ($k2 != 0 ? ', ' : '') . strtoupper($v2[0]) . ' (' . $v2[1] . ')';
 		}
 	}
-	if ($total > 1000)		$percentprice = (int) $options['p1000'];
-	else if ($total > 750)	$percentprice = (int) $options['p750'];
-	else if ($total > 500)	$percentprice = (int) $options['p500'];
-	else if ($total > 250)	$percentprice = (int) $options['p250'];
-	else if ($total > 100)	$percentprice = (int) $options['p100'];
+	if ($total >= 1000)		$percentprice = (int) $options['p1000'];
+	else if ($total >= 750)	$percentprice = (int) $options['p750'];
+	else if ($total >= 500)	$percentprice = (int) $options['p500'];
+	else if ($total >= 250)	$percentprice = (int) $options['p250'];
+	else if ($total >= 100)	$percentprice = (int) $options['p100'];
 	else					$percentprice = (int) $options['p50'];
 	$price += $aprice / 100 * $percentprice;
 	$price += $addpriceFrontal;
