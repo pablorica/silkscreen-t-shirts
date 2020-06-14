@@ -177,7 +177,7 @@ function pp_settings()
 	{
 		$options = get_option('pp_options');
 		$value = 'Si elijes la opción sin embolsado, te enviaremos tus prendas dobladas por la mitad y ordenadas por tallas.';
-		if( isset($options['embolsado_text']) && $options['embolsado_text'] != '') {
+		if( isset($options['embolsado_text'])) {
 			$value = $options['embolsado_text'];
 		}
 		
@@ -652,11 +652,12 @@ function get_prices()
 
 				/* Según las cantidades se aplicarán distintos precios */
 
-				if($total <= $options['qty_price_unit']): //Se aplica precio unitario
+				if($quantity <= $options['qty_price_unit']): //Se aplica precio unitario
 
-					$uprice = (float) $variation_obj->get_regular_price();				
+					$uprice = (float) $variation_obj->get_regular_price();	
+			
 
-				elseif($total > $options['qty_price_unit'] && $total <= $options['qty_price_pack']): //Precio por pack
+				elseif($quantity > $options['qty_price_unit'] && $quantity <= $options['qty_price_pack']): //Precio por pack
 
 					$uprice = (float) get_post_meta( $variation_id, '_pack_price', true );
 				
